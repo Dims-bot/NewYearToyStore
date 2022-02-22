@@ -1,0 +1,11 @@
+spring:
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+  datasource:
+    url: jdbc:postgresql://localhost:5432/new_year_toy_store?characterEncoding=UTF-8&useUnicode=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: postgres
+    driver-class-name: org.postgresql.Driver
+    password: 12345
+
+
+

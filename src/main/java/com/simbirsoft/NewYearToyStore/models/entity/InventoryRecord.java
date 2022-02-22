@@ -1,14 +1,16 @@
 package com.simbirsoft.NewYearToyStore.models.entity;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 
 @Entity
-@EqualsAndHashCode(of = "product")
 @NoArgsConstructor
-@ToString (of = {"id", "product", "quantity"})
+
+@FieldDefaults(level = AccessLevel.PROTECTED)
 @Getter
+@Setter
 @Table(name = "inventory_records")
 public class InventoryRecord {
 
@@ -19,11 +21,6 @@ public class InventoryRecord {
     @MapsId
     NewYearToy product;
 
-    @Column(nullable = false, precision = 7)
+    @Column
     int quantity;
-
-    public InventoryRecord(NewYearToy product, int quantity) {
-        this.product = product;
-        this.quantity = quantity;
-    }
 }

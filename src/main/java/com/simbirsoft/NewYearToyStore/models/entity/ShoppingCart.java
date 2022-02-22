@@ -1,37 +1,36 @@
 package com.simbirsoft.NewYearToyStore.models.entity;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
-//@EqualsAndHashCode(of = {"firstName", "lastName", "email"})
+@FieldDefaults(level = AccessLevel.PROTECTED)
 @NoArgsConstructor
-@ToString(of = {"shoppingCartItems", "customer", "shoppingCartTotal"})
 @Getter
+@Setter
 @Table(name = "shopping_cart")
 public class ShoppingCart {
 
     @Id
-    private Long id;
+    Long id;
 
     @OneToMany(
             mappedBy = "shoppingCart",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<ShoppingCartItem> shoppingCartItems;
+    List<ShoppingCartItem> shoppingCartItems;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
-    private Customer customer;
+    Customer customer;
 
-    @Column(nullable = false, precision = 7)
-    private BigDecimal shoppingCartTotal;
+    @Column
+    BigDecimal shoppingCartTotal;
 
     public void addShoppingCartItem(ShoppingCartItem shoppingCartItem) {
         shoppingCartItems.add(shoppingCartItem);
@@ -42,8 +41,5 @@ public class ShoppingCart {
         shoppingCartItems.remove(shoppingCartItem);
         shoppingCartItem.setShoppingCart(null);
     }
-
-
-
 
 }

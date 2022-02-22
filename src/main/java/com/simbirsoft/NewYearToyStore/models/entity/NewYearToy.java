@@ -2,39 +2,28 @@ package com.simbirsoft.NewYearToyStore.models.entity;
 
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Entity
-@EqualsAndHashCode(of = {"name", "category", "price"})
+@FieldDefaults(level = AccessLevel.PROTECTED)
 @NoArgsConstructor
-@ToString (of = {"name", "category", "price"})
 @Getter
+@Setter
 @Table(name = "toys")
-public class NewYearToy {
+public class NewYearToy extends BaseDomainEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @Column(nullable = false, length = 32)
-    private String name;
+    @Column
+    String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    private Category category;
+    Category category;
 
-    @Column(nullable = false, precision = 7,scale = 2)
-    private BigDecimal price;
+    @Column
+    BigDecimal price;
 
-
-    public NewYearToy(String name, @NonNull Category category, @NonNull BigDecimal price) {
-        this.name = name;
-        this.category = category;
-        this.price = price;
-    }
 }
