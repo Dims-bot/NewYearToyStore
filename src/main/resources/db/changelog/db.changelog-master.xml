@@ -1,0 +1,174 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create-table-categories" author="dSolomakhin">
+        <createTable tableName="categories">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="category_name" type="varchar(64)">
+                <constraints unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-table-new_year_toys" author="dSolomakhin">
+        <createTable tableName="new_year_toys">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name_of_toy" type="varchar(64)"/>
+            <column name="category_id" type="bigint"/>
+            <column name="price" type="money"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="new_year_toys"
+                                 baseColumnNames="category_id"
+                                 constraintName="new_year_toy_id_category_id"
+                                 referencedTableName="categories"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="create-table-inventory_records" author="dSolomakhin">
+        <createTable tableName="inventory_records">
+            <column name="new_year_toy_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="quantity" type="integer"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="inventory_records"
+                                 baseColumnNames="new_year_toy_id"
+                                 constraintName="inventory-records_id_new-year-toy_id"
+                                 referencedTableName="new_year_toys"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+    <changeSet id="create-table-customers" author="dSolomakhin">
+        <createTable tableName="customers">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(64)"/>
+            <column name="last_name" type="varchar(64)"/>
+            <column name="email" type="varchar(64)">
+                <constraints unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-table-shopping_cart" author="dSolomakhin">
+        <createTable tableName="shopping_cart">
+            <column name="customer_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+<!--            <column name="customer_id" type="bigint"/>-->
+        </createTable>
+        <addForeignKeyConstraint baseTableName="shopping_cart"
+                                 baseColumnNames="customer_id"
+                                 constraintName="shopping-cart_id_customer_id"
+                                 referencedTableName="customers"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="create-table-shopping_cart_items" author="dSolomakhin">
+        <createTable tableName="shopping_cart_items">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="new_year_toy_id" type="bigint"/>
+            <column name="shopping_cart_id" type="bigint"/>
+            <column name="quantity" type="integer"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="shopping_cart_items"
+                                 baseColumnNames="new_year_toy_id"
+                                 constraintName="shopping-cart-item_id_new-year-toy_id"
+                                 referencedTableName="new_year_toys"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="shopping_cart_items"
+                                 baseColumnNames="shopping_cart_id"
+                                 constraintName="shopping-cart-item_id_shopping-cart_id"
+                                 referencedTableName="shopping_cart"
+                                 referencedColumnNames="customer_id"/>
+    </changeSet>
+
+    <changeSet id="create-table-orders" author="dSolomakhin">
+        <createTable tableName="orders">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="created" type="timestamp"/>
+            <column name="customer_id" type="bigint"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="orders"
+                                 baseColumnNames="customer_id"
+                                 constraintName="order_id_customer_id"
+                                 referencedTableName="customers"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="create-table-order_details" author="dSolomakhin">
+        <createTable tableName="order_details">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="new_year_toy_id" type="bigint"/>
+            <column name="quantity" type="integer"/>
+            <column name="order_id" type="bigint"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="order_details"
+                                 baseColumnNames="new_year_toy_id"
+                                 constraintName="order-detail_id_new-year-toy_id"
+                                 referencedTableName="new_year_toys"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="order_details"
+                                 baseColumnNames="order_id"
+                                 constraintName="order-detail_id_order_id"
+                                 referencedTableName="orders"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="create-table-write_offs" author="dSolomakhin">
+        <createTable tableName="write_offs">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="created" type="timestamp"/>
+            <column name="is_approved" type="boolean"/>
+
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="create-table-write_off-records" author="dSolomakhin">
+        <createTable tableName="write_off_records">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="new_year_toy_id" type="bigint"/>
+            <column name="write_off_id" type="bigint"/>
+            <column name="quantity" type="integer"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="write_off_records"
+                                 baseColumnNames="new_year_toy_id"
+                                 constraintName="write_off_records_id_new-year-toy_id"
+                                 referencedTableName="new_year_toys"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="write_off_records"
+                                 baseColumnNames="write_off_id"
+                                 constraintName="write_off_id_order_id"
+                                 referencedTableName="write_offs"
+                                 referencedColumnNames="id"/>
+
+
+    </changeSet>
+
+</databaseChangeLog>
