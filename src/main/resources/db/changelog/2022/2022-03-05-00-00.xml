@@ -1,0 +1,19 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="2022-03-05-00-00" author="dSolomakhin">
+        <createTable tableName="shopping_cart">
+            <column name="customer_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <!--            <column name="customer_id" type="bigint"/>-->
+        </createTable>
+        <addForeignKeyConstraint baseTableName="shopping_cart"
+                                 baseColumnNames="customer_id"
+                                 constraintName="shopping-cart_id_customer_id"
+                                 referencedTableName="customers"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

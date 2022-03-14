@@ -2,21 +2,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet id="create-table-categories" author="dSolomakhin">
-        <createTable tableName="categories">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="category_name" type="varchar(64)"/>
-        </createTable>
-    </changeSet>
-    <changeSet id="create-table-toys" author="dSolomakhin">
-        <createTable tableName="toys">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name=""
-        </createTable>
-    </changeSet>
+
+    <includeAll path="db/changelog/2022"/>
 
 </databaseChangeLog>
