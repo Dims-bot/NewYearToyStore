@@ -9,7 +9,6 @@ import java.util.List;
 
 @Entity
 @FieldDefaults(level = AccessLevel.PROTECTED)
-//@NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "shopping_cart")

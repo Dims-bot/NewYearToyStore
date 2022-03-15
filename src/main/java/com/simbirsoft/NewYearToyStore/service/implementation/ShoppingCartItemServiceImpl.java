@@ -67,7 +67,7 @@ public class ShoppingCartItemServiceImpl implements ShoppingCartItemService {
     @Override
     public Optional<ShoppingCartItemDto> updateShoppingCartItem(ShoppingCartItemDto shoppingCartItemDtoForUpdate) {
         Long idShoppingCartItemDto = shoppingCartItemDtoForUpdate.getId();
-        if(shoppingCartItemRepository.existsById(idShoppingCartItemDto)) {
+        if (shoppingCartItemRepository.existsById(idShoppingCartItemDto)) {
             ShoppingCartItem shoppingCartItemToUpdate = shoppingCartItemRepository.getById(idShoppingCartItemDto);
             shoppingCartItemToUpdate.setQuantity(shoppingCartItemDtoForUpdate.getQuantity());
             ShoppingCartItemDto shoppingCartItemDtoUpdated = shoppingCartItemMapper.updateShoppingCartItemDto(shoppingCartItemRepository.save(shoppingCartItemToUpdate), new ShoppingCartItemDto());
@@ -79,9 +79,9 @@ public class ShoppingCartItemServiceImpl implements ShoppingCartItemService {
 
     @Override
     public boolean deleteShoppingCartItem(Long id) {
-        if(shoppingCartItemRepository.existsById(id)) {
+        if (shoppingCartItemRepository.existsById(id)) {
             shoppingCartItemRepository.deleteById(id);
-            return  true;
+            return true;
         }
         return false;
     }

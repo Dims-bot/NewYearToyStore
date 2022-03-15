@@ -17,7 +17,7 @@ public class OrderDetailDto {
     public OrderDetailDto() {
     }
 
-    public OrderDetailDto(Long id, Integer quantity, Long orderId,Long newYearToyId) {
+    public OrderDetailDto(Long id, Integer quantity, Long orderId, Long newYearToyId) {
         this.id = id;
         this.newYearToyId = newYearToyId;
         this.quantity = quantity;

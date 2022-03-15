@@ -16,12 +16,10 @@ public class CategoryDtoNew {
     String categoryName;
 
     public CategoryDtoNew(String categoryName) {
-
         this.categoryName = categoryName;
     }
 
     public CategoryDtoNew() {
-
     }
 
     public String getCategoryName() {

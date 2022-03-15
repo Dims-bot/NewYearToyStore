@@ -26,11 +26,9 @@ public class NewYearToyController {
         return ResponseEntity.ok().body(newYearToyDtoOptional);
     }
 
-
     @GetMapping("/{id}/toy")
     public ResponseEntity<?> getNewYearToyById(@PathVariable Long id) {
         Optional<NewYearToyDto> newYearToyDtoOptional = newYearToyService.getNewYearToy(id);
-
         return newYearToyDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(newYearToyDtoOptional) :
                 ResponseEntity.badRequest().body("Invalid NewYearToy id: " + id);
@@ -40,7 +38,6 @@ public class NewYearToyController {
     @PutMapping("/update")
     public  ResponseEntity<?> updateNewYearToy(@RequestBody NewYearToyDto newYearToyDto) {
         Optional<NewYearToyDto> newYearToyDtoOptional = newYearToyService.updateNewYearToy(newYearToyDto);
-
         return newYearToyDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(newYearToyDtoOptional):
                 ResponseEntity.badRequest().body("Invalid NewYearToy id: " + newYearToyDto.getId() + " or Category Id " + newYearToyDto.getCategoryId());

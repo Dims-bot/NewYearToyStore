@@ -27,9 +27,8 @@ public class WriteOffRecordController {
     @PostMapping("/add")
     public ResponseEntity<?> addWriteOffRecord(@RequestBody WriteOffRecordDto writeOffRecordDto) {
         Optional<WriteOffRecordDto> writeOffRecordDtoOptional = writeOffRecordService.saveWriteOffRecord(writeOffRecordDto);
-
         return writeOffRecordDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(writeOffRecordDtoOptional) :
-                ResponseEntity.badRequest().body("WriteOffRecord with writeOff " + writeOffRecordDto.getWriteOffId() + " and orderDetailId " + writeOffRecordDto.getId() + "already in Db" );
+                ResponseEntity.badRequest().body("WriteOffRecord with writeOff " + writeOffRecordDto.getWriteOffId() + " and orderDetailId " + writeOffRecordDto.getId() + "already in Db");
     }
 }

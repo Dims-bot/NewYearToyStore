@@ -12,10 +12,8 @@ import org.springframework.web.server.ResponseStatusException;
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface InventoryRecordMapper {
-
-
-    InventoryRecordDto updateInventoryRecordDto(InventoryRecord inventoryRecord, @MappingTarget InventoryRecordDto inventoryRecordDto);
-
+    InventoryRecordDto updateInventoryRecordDto(InventoryRecord inventoryRecord,
+                                                @MappingTarget InventoryRecordDto inventoryRecordDto);
 
     @Mapping(target = "newYearToy", ignore = true)
     InventoryRecord updateInventoryRecord(InventoryRecordDto inventoryRecordDto,
@@ -26,13 +24,12 @@ public interface InventoryRecordMapper {
     default void afterUpdateInventoryRecord(InventoryRecordDto inventoryRecordDto,
                                             @MappingTarget InventoryRecord inventoryRecord,
                                             @Context NewYearToyRepository newYearToyRepository) {
-        if(inventoryRecordDto.getId() != null && (inventoryRecord.getNewYearToy() == null || !inventoryRecord.getNewYearToy().getId().equals(inventoryRecordDto.getId()))) {
+        if (inventoryRecordDto.getId() != null && (inventoryRecord.getNewYearToy() == null || !inventoryRecord.getNewYearToy().getId().equals(inventoryRecordDto.getId()))) {
             final NewYearToy newYearToy = newYearToyRepository.findById(inventoryRecord.getId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "NewYearToy not found"));
             inventoryRecord.setNewYearToy(newYearToy);
         }
 
     }
-
 
 }

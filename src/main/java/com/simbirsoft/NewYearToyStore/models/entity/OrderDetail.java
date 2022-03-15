@@ -8,12 +8,10 @@ import javax.persistence.*;
 
 @Entity
 @FieldDefaults(level = AccessLevel.PROTECTED)
-//@NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "order_details")
 public class OrderDetail extends BaseDomainEntity {
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "new_year_toy_id")

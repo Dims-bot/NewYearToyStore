@@ -11,23 +11,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 @Mapper(componentModel = "spring",
-unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface NewYearToyMapper {
 
-//    NewYearToyDto NewYearToyToDto(NewYearToy newYearToy);
-//
-//    NewYearToy newYearToyDtoNewToNewYearToy(NewYearToyDtoNew newYearToyDtoNew);
-
     @Mapping(target = "categoryId", ignore = true)
-    NewYearToyDto updateNewYearToyDto(NewYearToy newYearToy, @MappingTarget NewYearToyDto newYearToyDto);
+    NewYearToyDto updateNewYearToyDto(NewYearToy newYearToy,
+                                      @MappingTarget NewYearToyDto newYearToyDto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)
-    NewYearToy updateNewYearToy(NewYearToyDto newYearToyDto, @MappingTarget NewYearToy newYearToy, @Context CategoryRepository categoryRepository);
-
+    NewYearToy updateNewYearToy(NewYearToyDto newYearToyDto,
+                                @MappingTarget NewYearToy newYearToy,
+                                @Context CategoryRepository categoryRepository);
 
     @AfterMapping
-    default void afterUpdateNewYearToy(NewYearToy newYearToy, @MappingTarget NewYearToyDto newYearToyDto) {
+    default void afterUpdateNewYearToy(NewYearToy newYearToy,
+                                       @MappingTarget NewYearToyDto newYearToyDto) {
         newYearToyDto.setCategoryId(newYearToy.getCategory() == null ? null : newYearToy.getCategory().getId());
     }
 
@@ -35,7 +34,7 @@ public interface NewYearToyMapper {
     default void afterUpdateNewYearToy(NewYearToyDto newYearToyDto,
                                        @MappingTarget NewYearToy newYearToy,
                                        @Context CategoryRepository categoryRepository) {
-        if (newYearToyDto.getCategoryId() !=null &&(newYearToy.getCategory() == null || !newYearToy.getCategory().getId().equals(newYearToyDto.getCategoryId()))) {
+        if (newYearToyDto.getCategoryId() != null && (newYearToy.getCategory() == null || !newYearToy.getCategory().getId().equals(newYearToyDto.getCategoryId()))) {
             final Category category = categoryRepository.findById(newYearToyDto.getCategoryId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "category not found"));
             newYearToy.setCategory(category);

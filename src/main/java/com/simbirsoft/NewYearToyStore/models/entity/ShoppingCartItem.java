@@ -9,12 +9,10 @@ import java.math.BigDecimal;
 
 @Entity
 @FieldDefaults(level = AccessLevel.PROTECTED)
-//@NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "shopping_cart_items")
 public class ShoppingCartItem extends BaseDomainEntity {
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "new_year_toy_id")
@@ -41,9 +39,13 @@ public class ShoppingCartItem extends BaseDomainEntity {
         return newYearToy;
     }
 
-    public void setId(Long id) {this.id = id;};
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Long getId() {return id;}
+    public Long getId() {
+        return id;
+    }
 
     public void setNewYearToy(NewYearToy newYearToy) {
         this.newYearToy = newYearToy;

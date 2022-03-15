@@ -28,8 +28,14 @@ public class CustomerDtoForRegistration {
     public void setEmail(String email) {
         this.email = email;
     }
-    public void setFirstName(String firstName) {this.firstName = firstName;}
-    public void setLastNameName(String lastNameName) {this.lastName = lastName;}
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastNameName(String lastNameName) {
+        this.lastName = lastName;
+    }
 
     public String getFirstName() {
         return firstName;

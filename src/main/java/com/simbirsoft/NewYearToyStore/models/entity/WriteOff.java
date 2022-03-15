@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @FieldDefaults(level = AccessLevel.PROTECTED)
-//@NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "write_offs")

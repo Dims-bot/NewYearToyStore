@@ -29,9 +29,9 @@ public interface ShoppingCartItemMapper {
 
 
     @AfterMapping
-    default void afterUpdateShoppingCartItemDto(ShoppingCartItem shoppingCartItem, @MappingTarget ShoppingCartItemDto shoppingCartItemDto){
+    default void afterUpdateShoppingCartItemDto(ShoppingCartItem shoppingCartItem, @MappingTarget ShoppingCartItemDto shoppingCartItemDto) {
         shoppingCartItemDto.setShoppingCartId(shoppingCartItem.getShoppingCart() == null ? null : shoppingCartItem.getShoppingCart().getId());
-        shoppingCartItemDto.setNewYearToyId(shoppingCartItem.getNewYearToy() == null ? null :shoppingCartItem.getNewYearToy().getId());
+        shoppingCartItemDto.setNewYearToyId(shoppingCartItem.getNewYearToy() == null ? null : shoppingCartItem.getNewYearToy().getId());
 
     }
 

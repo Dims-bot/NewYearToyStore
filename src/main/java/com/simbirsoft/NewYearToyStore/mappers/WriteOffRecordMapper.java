@@ -17,29 +17,29 @@ public interface WriteOffRecordMapper {
 
     @Mapping(target = "writeOffId", ignore = true)
     @Mapping(target = "newYearToyId", ignore = true)
-    WriteOffRecordDto  updateWriteOfRecordDto(WriteOffRecord writeOffRecord,
-                                            @MappingTarget WriteOffRecordDto writeOffRecordDto);
+    WriteOffRecordDto updateWriteOfRecordDto(WriteOffRecord writeOffRecord,
+                                             @MappingTarget WriteOffRecordDto writeOffRecordDto);
 
     @Mapping(target = "newYearToy", ignore = true)
     @Mapping(target = "writeOff", ignore = true)
     @Mapping(target = "id", ignore = true)
     WriteOffRecord updateWriteOffRecord(WriteOffRecordDto writeOffRecordDto,
-                                     @MappingTarget WriteOffRecord writeOffRecord,
-                                     @Context WriteOffRepository writeOffRepository,
-                                     @Context NewYearToyRepository newYearToyRepository);
+                                        @MappingTarget WriteOffRecord writeOffRecord,
+                                        @Context WriteOffRepository writeOffRepository,
+                                        @Context NewYearToyRepository newYearToyRepository);
 
     @AfterMapping
-    default void afterUpdateWriteOffRecordDto(WriteOffRecord writeOffRecord, @MappingTarget WriteOffRecordDto writeOffRecordDto){
+    default void afterUpdateWriteOffRecordDto(WriteOffRecord writeOffRecord, @MappingTarget WriteOffRecordDto writeOffRecordDto) {
         writeOffRecordDto.setWriteOffId(writeOffRecord.getWriteOff() == null ? null : writeOffRecord.getWriteOff().getId());
         writeOffRecordDto.setNewYearToyId(writeOffRecord.getNewYearToy() == null ? null : writeOffRecord.getNewYearToy().getId());
 
     }
 
     @AfterMapping
-    default void  afterUpdateWriteOffRecord(WriteOffRecordDto writeOffRecordDto,
-                                         @MappingTarget WriteOffRecord writeOffRecord,
-                                         @Context WriteOffRepository writeOffRepository,
-                                         @Context NewYearToyRepository newYearToyRepository) {
+    default void afterUpdateWriteOffRecord(WriteOffRecordDto writeOffRecordDto,
+                                           @MappingTarget WriteOffRecord writeOffRecord,
+                                           @Context WriteOffRepository writeOffRepository,
+                                           @Context NewYearToyRepository newYearToyRepository) {
         if (writeOffRecordDto.getNewYearToyId() != null && (writeOffRecord.getNewYearToy() == null || writeOffRecord.getNewYearToy().getId().equals(writeOffRecordDto.getNewYearToyId()))) {
             final NewYearToy newYearToy = newYearToyRepository.findById(writeOffRecordDto.getNewYearToyId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "NewYearToy not found"));

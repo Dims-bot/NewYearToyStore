@@ -2,7 +2,6 @@ package com.simbirsoft.NewYearToyStore.controllers;
 
 
 import com.simbirsoft.NewYearToyStore.models.dtos.InventoryRecordDto;
-import com.simbirsoft.NewYearToyStore.models.dtos.NewYearToyDto;
 import com.simbirsoft.NewYearToyStore.service.InventoryRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +41,6 @@ public class InventoryRecordController {
     @PostMapping("/wright_off")
     public ResponseEntity<?> wrightOff(@RequestBody Set<InventoryRecordDto> inventoryRecordDtoSet) {
         inventoryRecordService.wrightOff(inventoryRecordDtoSet);
-
         return ResponseEntity.ok().body("Write-off of goods was made");
     }
 
@@ -50,7 +48,6 @@ public class InventoryRecordController {
     @GetMapping("/{id}/inventory")
     public ResponseEntity<?> getInventoryRecord(@PathVariable Long id) {
         Optional<InventoryRecordDto> inventoryRecordDtoOptional = inventoryRecordService.getInventoryRecordById(id);
-
         return inventoryRecordDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(inventoryRecordDtoOptional) :
                 ResponseEntity.badRequest().body("Invalid NewYearToy id: " + id);
@@ -59,7 +56,6 @@ public class InventoryRecordController {
     @PutMapping("/update")
     public  ResponseEntity<?> updateInventoryRecord(@RequestBody InventoryRecordDto inventoryRecordDto) {
         Optional<InventoryRecordDto> inventoryRecordDtoOptional = inventoryRecordService.updateInventoryRecord(inventoryRecordDto);
-
         return inventoryRecordDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(inventoryRecordDtoOptional):
                 ResponseEntity.badRequest().body("Invalid NewYearToy id: " + inventoryRecordDto.getId());
@@ -68,7 +64,6 @@ public class InventoryRecordController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         boolean isPresentInventoryRecord = inventoryRecordService.deleteInventoryRecord(id);
-
         return isPresentInventoryRecord ?
                 ResponseEntity.ok().body("InventoryRecord with id " + id + " was deleted"):
                 ResponseEntity.badRequest().body("Invalid InventoryRecord id: " + id);

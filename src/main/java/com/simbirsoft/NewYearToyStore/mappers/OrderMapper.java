@@ -19,7 +19,6 @@ public interface OrderMapper {
     @Mapping(target = "customerId", ignore = true)
     OrderDto updateOrderDto(Order order, @MappingTarget OrderDto orderDto);
 
-
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "customer", ignore = true)
     @Mapping(source = "created", target = "created", qualifiedByName = "localDateTime")
@@ -34,7 +33,6 @@ public interface OrderMapper {
         return LocalDateTime.parse(localDateTime, formatter);
     }
 
-
     @AfterMapping
     default void afterOrderDto(Order order, @MappingTarget OrderDto orderDto) {
         orderDto.setCustomerId(order.getCustomer() == null ? null : order.getCustomer().getId());
@@ -45,7 +43,6 @@ public interface OrderMapper {
         if (localDateTime == null) {
             return null;
         }
-
         return localDateTime.toString();
     }
 

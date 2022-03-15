@@ -6,6 +6,7 @@ import com.simbirsoft.NewYearToyStore.models.dtos.ShoppingCartItemDto;
 import java.util.Optional;
 
 public interface ShoppingCartItemService {
+
     Optional<ShoppingCartItemDto> saveShoppingCartItem(ShoppingCartItemDto shoppingCartItemDto);
 
     Optional<ShoppingCartItemDto> getShoppingCartItem(Long id);

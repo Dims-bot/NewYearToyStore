@@ -33,7 +33,6 @@ public interface WriteOffMapper {
         if (localDateTime == null) {
             return null;
         }
-
         return localDateTime.toString();
     }
 

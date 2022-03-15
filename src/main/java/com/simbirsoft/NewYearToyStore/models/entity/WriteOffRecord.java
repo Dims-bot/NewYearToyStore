@@ -10,7 +10,6 @@ import javax.persistence.*;
 
 @Entity
 @FieldDefaults(level = AccessLevel.PROTECTED)
-//@NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "write_off_records")

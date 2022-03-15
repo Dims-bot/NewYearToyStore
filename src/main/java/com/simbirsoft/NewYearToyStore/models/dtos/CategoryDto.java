@@ -9,7 +9,6 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 public class CategoryDto {
-
     Long id;
     String categoryName;
 

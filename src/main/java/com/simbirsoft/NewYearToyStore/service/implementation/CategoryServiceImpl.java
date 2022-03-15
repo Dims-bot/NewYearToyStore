@@ -26,7 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Optional<CategoryDto> saveCategory(CategoryDtoNew categoryDtoNew) {
-        if(!categoryRepository.existsByCategoryName(categoryDtoNew.getCategoryName())) {
+        if (!categoryRepository.existsByCategoryName(categoryDtoNew.getCategoryName())) {
             Category categoryModel = categoryMapper.categoryDtoNewToCategory(categoryDtoNew);
             CategoryDto categoryDto = categoryMapper.CategoryToDto(categoryRepository.save(categoryModel));
 
@@ -45,8 +45,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Optional<CategoryDto> updateCategory(CategoryDto categoryDtoForUpdate) {
 
-        if(categoryRepository.existsById(categoryDtoForUpdate.getId()) &&
-        !categoryRepository.existsByCategoryName(categoryDtoForUpdate.getCategoryName())) {
+        if (categoryRepository.existsById(categoryDtoForUpdate.getId()) &&
+                !categoryRepository.existsByCategoryName(categoryDtoForUpdate.getCategoryName())) {
             Optional<Category> categoryOptionalToUpdate = categoryRepository.findById(categoryDtoForUpdate.getId());
             Category categoryToUpdate = categoryOptionalToUpdate.get();
             categoryToUpdate.setCategoryName(categoryDtoForUpdate.getCategoryName());
@@ -60,7 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public boolean deleteCategory(Long categoryId) {
-        if(categoryRepository.existsById(categoryId)) {
+        if (categoryRepository.existsById(categoryId)) {
             categoryRepository.deleteById(categoryId);
             return true;
         }

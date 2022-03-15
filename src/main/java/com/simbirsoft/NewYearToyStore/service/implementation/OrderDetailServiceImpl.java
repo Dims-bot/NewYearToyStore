@@ -48,7 +48,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     @Override
     public Optional<OrderDetailDto> saveOrderDetail(OrderDetailDto orderDetailDto) {
         if (!isPresentSameOrderDetailInDb(orderDetailDto)) {
-            OrderDetail orderDetailToSave = orderDetailMapper.updateOrderDetail(orderDetailDto, new OrderDetail(),orderRepository,newYearToyRepository);
+            OrderDetail orderDetailToSave = orderDetailMapper.updateOrderDetail(orderDetailDto, new OrderDetail(), orderRepository, newYearToyRepository);
             OrderDetailDto orderDetailDtoFromDB = orderDetailMapper.updateOrderDetailDto(orderDetailRepository.save(orderDetailToSave), new OrderDetailDto());
 
             return Optional.of(orderDetailDtoFromDB);

@@ -30,8 +30,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private OrderService orderService;
 
-    //private OrderMapper orderMapper;
-
     private InventoryRecordService inventoryRecordService;
 
     private OrderDetailService orderDetailService;
@@ -42,7 +40,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                                    CustomerRepository customerRepository,
                                    ShoppingCartItemRepository shoppingCartItemRepository,
                                    OrderService orderService,
-                                   OrderMapper orderMapper,
                                    InventoryRecordService inventoryRecordService,
                                    OrderDetailService orderDetailService
     ) {
@@ -51,7 +48,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         this.customerRepository = customerRepository;
         this.shoppingCartItemRepository = shoppingCartItemRepository;
         this.orderService = orderService;
-        //this.orderMapper = orderMapper;
         this.inventoryRecordService = inventoryRecordService;
         this.orderDetailService = orderDetailService;
     }
@@ -92,17 +88,17 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public Optional<OrderDto> buy(ShoppingCartDto shoppingCartDto) {
         Set<ShoppingCartItem> shoppingCartItemSet = shoppingCartItemRepository.getShoppingCartItemsByShoppingCartId(shoppingCartDto.getId());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        OrderDto orderDto = new OrderDto(null,LocalDateTime.now().format(formatter),shoppingCartDto.getId());
+        OrderDto orderDto = new OrderDto(null, LocalDateTime.now().format(formatter), shoppingCartDto.getId());
         Optional<OrderDto> orderDtoOptionalFromDb = orderService.saveOrder(orderDto);
 
-        for(ShoppingCartItem shoppingCartItem : shoppingCartItemSet) {
+        for (ShoppingCartItem shoppingCartItem : shoppingCartItemSet) {
             Long newYearToyId = shoppingCartItem.getNewYearToy().getId();
             Optional<InventoryRecordDto> inventoryRecordDtoOptional = inventoryRecordService.getInventoryRecordById(newYearToyId);
             Integer quantityAfterWrightOff = inventoryRecordDtoOptional.get().getQuantity() - shoppingCartItem.getQuantity();
             InventoryRecordDto inventoryRecordDtoToSave = inventoryRecordDtoOptional.get();
             inventoryRecordDtoToSave.setQuantity(quantityAfterWrightOff);
             inventoryRecordService.updateInventoryRecord(inventoryRecordDtoToSave);
-            OrderDetailDto orderDetailDto = new OrderDetailDto(null, shoppingCartItem.getQuantity(),orderDtoOptionalFromDb.get().getId(),newYearToyId);
+            OrderDetailDto orderDetailDto = new OrderDetailDto(null, shoppingCartItem.getQuantity(), orderDtoOptionalFromDb.get().getId(), newYearToyId);
             orderDetailService.saveOrderDetail(orderDetailDto);
         }
 

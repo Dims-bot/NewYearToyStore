@@ -37,12 +37,12 @@ public class WriteOffServiceImpl implements WriteOffService {
 
     @Override
     public Optional<WriteOffDto> getWriteOff(Long id) {
-       Optional<WriteOff> writeOffOptional = writeOffRepository.findById(id);
-       if(writeOffOptional.isPresent()) {
-           WriteOffDto writeOffDto = writeOffMapper.updateWriteOffDto(writeOffOptional.get(),new WriteOffDto());
+        Optional<WriteOff> writeOffOptional = writeOffRepository.findById(id);
+        if (writeOffOptional.isPresent()) {
+            WriteOffDto writeOffDto = writeOffMapper.updateWriteOffDto(writeOffOptional.get(), new WriteOffDto());
 
-           return Optional.of(writeOffDto);
-       }
+            return Optional.of(writeOffDto);
+        }
         return Optional.empty();
     }
 

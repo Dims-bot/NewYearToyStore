@@ -8,6 +8,7 @@ import com.simbirsoft.NewYearToyStore.models.entity.WriteOffRecord;
 import java.util.Optional;
 
 public interface WriteOffService {
+
     Optional<WriteOffDto> saveWriteOff(WriteOffDto writeOffDto);
 
     Optional<WriteOffDto> getWriteOff(Long id);

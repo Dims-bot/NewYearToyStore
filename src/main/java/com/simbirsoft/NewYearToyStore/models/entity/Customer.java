@@ -10,12 +10,11 @@ import java.lang.String;
 import javax.persistence.*;
 
 @Entity
-//@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED)
 @Getter
 @Setter
 @Table(name = "customers")
-public class Customer extends BaseDomainEntity  {
+public class Customer extends BaseDomainEntity {
 
     @Column
     String firstName;
@@ -26,18 +25,16 @@ public class Customer extends BaseDomainEntity  {
     @Column
     String email;
 
-    public Customer(){
+    public Customer() {
 
     }
 
-    public Customer(Long id, String firstName, String lastName, String email){
+    public Customer(Long id, String firstName, String lastName, String email) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
     }
-
-
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -63,8 +60,9 @@ public class Customer extends BaseDomainEntity  {
         return email;
     }
 
-    public Long getId() {return id;}
-
+    public Long getId() {
+        return id;
+    }
 
 
 }

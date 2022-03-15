@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import javax.persistence.*;
 
 @Entity
-//@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED)
 @Getter
 @Setter

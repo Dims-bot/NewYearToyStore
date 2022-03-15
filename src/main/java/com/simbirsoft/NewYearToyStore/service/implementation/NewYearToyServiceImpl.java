@@ -38,7 +38,7 @@ public class NewYearToyServiceImpl implements NewYearToyService {
     @Override
     public Optional<NewYearToyDto> getNewYearToy(Long id) {
         Optional<NewYearToy> newYearToyOptional = newYearToyRepository.findById(id);
-        if(newYearToyOptional.isPresent()) {
+        if (newYearToyOptional.isPresent()) {
             NewYearToyDto newYearToyDto = newYearToyMapper.updateNewYearToyDto(newYearToyOptional.get(), new NewYearToyDto());
             return Optional.of(newYearToyDto);
         }
@@ -50,7 +50,7 @@ public class NewYearToyServiceImpl implements NewYearToyService {
     @Override
     public Optional<NewYearToyDto> updateNewYearToy(NewYearToyDto newYearToyDtoNew) {
         Long idNewYearToyDto = newYearToyDtoNew.getId();
-        if(newYearToyRepository.existsById(idNewYearToyDto)&&categoryRepository.existsById(newYearToyDtoNew.getCategoryId())) {
+        if (newYearToyRepository.existsById(idNewYearToyDto) && categoryRepository.existsById(newYearToyDtoNew.getCategoryId())) {
             NewYearToy newYearToyToUpdate = newYearToyRepository.getById(idNewYearToyDto);
             newYearToyToUpdate.setNameOfToy(newYearToyDtoNew.getNameOfToy());
             newYearToyToUpdate.setPrice(newYearToyDtoNew.getPrice());
@@ -64,11 +64,9 @@ public class NewYearToyServiceImpl implements NewYearToyService {
         return Optional.empty();
     }
 
-
-
     @Override
     public boolean deleteNewYearToy(Long id) {
-        if(newYearToyRepository.existsById(id)) {
+        if (newYearToyRepository.existsById(id)) {
             newYearToyRepository.deleteById(id);
             return true;
         }

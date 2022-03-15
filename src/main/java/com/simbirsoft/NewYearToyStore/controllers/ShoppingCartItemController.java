@@ -22,7 +22,6 @@ public class ShoppingCartItemController {
     @PostMapping("/add")
     public ResponseEntity<?> addShoppingCartItem(@RequestBody ShoppingCartItemDto shoppingCartItemDto) {
         Optional<ShoppingCartItemDto> shoppingCartItemDtoOptional = shoppingCartItemService.saveShoppingCartItem(shoppingCartItemDto);
-
         return shoppingCartItemDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(shoppingCartItemDtoOptional) :
                 ResponseEntity.badRequest()
@@ -32,11 +31,9 @@ public class ShoppingCartItemController {
     @GetMapping("/{id}/shopping_cart_item")
     public ResponseEntity<?> getShoppingCartItem(@PathVariable Long id) {
         Optional<ShoppingCartItemDto> shoppingCartItemDtoOptional = shoppingCartItemService.getShoppingCartItem(id);
-
         return shoppingCartItemDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(shoppingCartItemDtoOptional) :
                 ResponseEntity.badRequest().body("Invalid ShoppingCartItem id: " + id);
-
 
     }
 
@@ -44,7 +41,6 @@ public class ShoppingCartItemController {
     @PutMapping("/update")
     public ResponseEntity<?> updateShoppingCartItem(@RequestBody ShoppingCartItemDto shoppingCartItemDto) {
         Optional<ShoppingCartItemDto> shoppingCartItemDtoOptional = shoppingCartItemService.updateShoppingCartItem(shoppingCartItemDto);
-
         return shoppingCartItemDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(shoppingCartItemDtoOptional) :
                 ResponseEntity.badRequest().body("Invalid ShoppingCartItem id: " + shoppingCartItemDto.getId());
@@ -55,11 +51,9 @@ public class ShoppingCartItemController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         boolean isPresentAndDeletedShoppingCartItem = shoppingCartItemService.deleteShoppingCartItem(id);
-
         return isPresentAndDeletedShoppingCartItem ?
                 ResponseEntity.ok().body("ShoppingCartItem with id " + id + " was deleted") :
                 ResponseEntity.badRequest().body("Invalid InventoryRecord id: " + id);
-
 
     }
 }

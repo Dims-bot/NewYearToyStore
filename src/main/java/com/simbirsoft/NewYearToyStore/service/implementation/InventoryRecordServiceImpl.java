@@ -18,9 +18,7 @@ import java.util.stream.Collectors;
 public class InventoryRecordServiceImpl implements InventoryRecordService {
 
     private InventoryRecordMapper inventoryRecordMapper;
-
     private InventoryRecordRepository inventoryRecordRepository;
-
     private NewYearToyRepository newYearToyRepository;
 
     @Autowired
@@ -53,7 +51,7 @@ public class InventoryRecordServiceImpl implements InventoryRecordService {
     @Override
     public Optional<InventoryRecordDto> updateInventoryRecord(InventoryRecordDto inventoryRecordDtoForUpdate) {
         Long idInventoryRecordDto = inventoryRecordDtoForUpdate.getId();
-        if(inventoryRecordRepository.existsById(idInventoryRecordDto)) {
+        if (inventoryRecordRepository.existsById(idInventoryRecordDto)) {
             InventoryRecord inventoryRecordToUpdate = inventoryRecordRepository.getById(idInventoryRecordDto);
             inventoryRecordToUpdate.setQuantity(inventoryRecordDtoForUpdate.getQuantity());
 
@@ -67,7 +65,7 @@ public class InventoryRecordServiceImpl implements InventoryRecordService {
 
     @Override
     public boolean deleteInventoryRecord(Long inventoryRecordId) {
-        if(inventoryRecordRepository.existsById(inventoryRecordId)) {
+        if (inventoryRecordRepository.existsById(inventoryRecordId)) {
             inventoryRecordRepository.deleteById(inventoryRecordId);
             return true;
         }
@@ -80,18 +78,18 @@ public class InventoryRecordServiceImpl implements InventoryRecordService {
         Set<InventoryRecordDto> inventoryRecordDtoPresentsToDB = inventoryRecordDtoSet.stream()
                 .filter(x -> inventoryRecordRepository.existsById(x.getId()))
                 .collect(Collectors.toSet());
-        if(!inventoryRecordDtoPresentsToDB.isEmpty())
-        for(InventoryRecordDto inventoryRecordDto : inventoryRecordDtoPresentsToDB) {
-            InventoryRecord inventoryRecordToChangeQuantity = inventoryRecordRepository.getById(inventoryRecordDto.getId());
-            Integer newQuantity = inventoryRecordDto.getQuantity() + inventoryRecordToChangeQuantity.getQuantity();
-            inventoryRecordToChangeQuantity.setQuantity(newQuantity);
-            inventoryRecordRepository.save(inventoryRecordToChangeQuantity);
+        if (!inventoryRecordDtoPresentsToDB.isEmpty())
+            for (InventoryRecordDto inventoryRecordDto : inventoryRecordDtoPresentsToDB) {
+                InventoryRecord inventoryRecordToChangeQuantity = inventoryRecordRepository.getById(inventoryRecordDto.getId());
+                Integer newQuantity = inventoryRecordDto.getQuantity() + inventoryRecordToChangeQuantity.getQuantity();
+                inventoryRecordToChangeQuantity.setQuantity(newQuantity);
+                inventoryRecordRepository.save(inventoryRecordToChangeQuantity);
 
-        }
+            }
         Set<InventoryRecordDto> inventoryRecordDtoNotPresentDb = inventoryRecordDtoSet.stream()
                 .filter(x -> !inventoryRecordRepository.existsById(x.getId()))
                 .collect(Collectors.toSet());
-        if(!inventoryRecordDtoNotPresentDb.isEmpty()) {
+        if (!inventoryRecordDtoNotPresentDb.isEmpty()) {
             for (InventoryRecordDto inventoryRecordDto : inventoryRecordDtoNotPresentDb) {
                 InventoryRecord inventoryRecordToSave = inventoryRecordMapper.updateInventoryRecord(inventoryRecordDto, new InventoryRecord(), newYearToyRepository);
                 inventoryRecordRepository.save(inventoryRecordToSave);
@@ -102,7 +100,7 @@ public class InventoryRecordServiceImpl implements InventoryRecordService {
     @Override
     @Transactional
     public void wrightOff(Set<InventoryRecordDto> inventoryRecordDtoSet) {
-        for(InventoryRecordDto inventoryRecordDto : inventoryRecordDtoSet) {
+        for (InventoryRecordDto inventoryRecordDto : inventoryRecordDtoSet) {
             if (inventoryRecordDtoSet.contains(inventoryRecordDto)) {
                 InventoryRecord inventoryRecordToChange = inventoryRecordRepository.getById(inventoryRecordDto.getId());
                 Integer newQuantity = inventoryRecordToChange.getQuantity() - inventoryRecordDto.getQuantity();

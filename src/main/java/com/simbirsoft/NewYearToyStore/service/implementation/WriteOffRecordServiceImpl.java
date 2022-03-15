@@ -25,7 +25,7 @@ public class WriteOffRecordServiceImpl implements WriteOffRecordService {
     WriteOffRepository writeOffRepository;
 
     public boolean isPresentSameWriteOffRecordInDb(WriteOffRecordDto writeOffRecordDto) {
-        if(writeOffRecordRepository.existsByWriteOffId(writeOffRecordDto.getWriteOffId())) {
+        if (writeOffRecordRepository.existsByWriteOffId(writeOffRecordDto.getWriteOffId())) {
             Set<WriteOffRecord> writeOffRecords = writeOffRecordRepository.getWriteOffRecordByWriteOffId(writeOffRecordDto.getWriteOffId());
 
             return writeOffRecords.stream()

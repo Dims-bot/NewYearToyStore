@@ -11,7 +11,6 @@ import javax.persistence.Column;
 @Getter
 @Setter
 public class CustomerDto {
-
     Long id;
     String firstName;
     String lastName;

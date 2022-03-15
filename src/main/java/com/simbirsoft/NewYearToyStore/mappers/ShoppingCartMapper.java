@@ -23,7 +23,7 @@ public interface ShoppingCartMapper {
     default void afterUpdateShoppingCart(ShoppingCartDto shoppingCartDto,
                                          @MappingTarget ShoppingCart shoppingCart,
                                          @Context CustomerRepository customerRepository) {
-        if(shoppingCartDto.getId() != null && (shoppingCart.getCustomer() == null || !shoppingCart.getCustomer().getId().equals(shoppingCartDto.getId()))) {
+        if (shoppingCartDto.getId() != null && (shoppingCart.getCustomer() == null || !shoppingCart.getCustomer().getId().equals(shoppingCartDto.getId()))) {
             final Customer customer = customerRepository.findById(shoppingCart.getId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
             shoppingCart.setCustomer(customer);

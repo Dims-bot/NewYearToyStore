@@ -15,7 +15,6 @@ import java.util.Optional;
 public class CustomerServiceImpl implements CustomerService {
 
     CustomerRepository customerRepository;
-
     CustomerMapper customerMapper;
 
     @Autowired
@@ -26,7 +25,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Optional<CustomerDto> saveCustomer(CustomerDtoForRegistration customerDtoForRegistration) {
-        if(!customerRepository.existsByEmail(customerDtoForRegistration.getEmail())) {
+        if (!customerRepository.existsByEmail(customerDtoForRegistration.getEmail())) {
             Customer customerModel = customerMapper.customerDtoForRegistrationToCustomer(customerDtoForRegistration);
             CustomerDto customerDto = customerMapper.EntityToDto(customerRepository.save(customerModel));
 
@@ -47,13 +46,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
-
-//    @Override
-//    public CustomerDto getCustomerByEmail(String email) {
-//
-//        return customerMapper.EntityToDto(customerRepository.findByEmail(email));
-//    }
-
     @Override
     public Optional<CustomerDto> getCustomerProfile(String email) {
         CustomerDto customerDto = customerMapper.EntityToDto(customerRepository.findByEmail(email));
@@ -65,7 +57,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Optional<CustomerDto> updateCustomer(CustomerDto customerDtoForUpdate) {
 
-        if(customerRepository.existsByEmail(customerDtoForUpdate.getEmail())) {
+        if (customerRepository.existsByEmail(customerDtoForUpdate.getEmail())) {
             Customer customer = customerRepository.findByEmail(customerDtoForUpdate.getEmail());
             customer.setFirstName(customerDtoForUpdate.getFirstName());
             customer.setLastName(customerDtoForUpdate.getLastName());

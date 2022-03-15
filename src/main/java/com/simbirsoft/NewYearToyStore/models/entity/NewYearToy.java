@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 
 @Entity
 @FieldDefaults(level = AccessLevel.PROTECTED)
-//@NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "new_year_toys")

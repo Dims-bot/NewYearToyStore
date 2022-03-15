@@ -8,15 +8,8 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CustomerMapper {
-
     CustomerDto EntityToDto(Customer customer);
 
-//    @Mapping(target = "id", ignore = true)
-//    CustomerDtoForRegistration entityToDto(Customer customer);
-
     Customer customerDtoForRegistrationToCustomer(CustomerDtoForRegistration customerDtoForRegistration);
-
-
-
 
 }
