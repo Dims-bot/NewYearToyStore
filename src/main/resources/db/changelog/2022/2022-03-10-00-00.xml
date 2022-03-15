@@ -1,0 +1,30 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="2022-03-10-00-00" author="dSolomakhin">
+        <createTable tableName="write_off_records">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="new_year_toy_id" type="bigint"/>
+            <column name="write_off_id" type="bigint"/>
+            <column name="quantity" type="integer"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="write_off_records"
+                                 baseColumnNames="new_year_toy_id"
+                                 constraintName="write_off_records_id_new-year-toy_id"
+                                 referencedTableName="new_year_toys"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="write_off_records"
+                                 baseColumnNames="write_off_id"
+                                 constraintName="write_off_id_order_id"
+                                 referencedTableName="write_offs"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+
+</databaseChangeLog>
