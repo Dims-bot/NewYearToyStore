@@ -5,4 +5,5 @@
 
     <includeAll path="db/changelog/2022"/>
 
+
 </databaseChangeLog>

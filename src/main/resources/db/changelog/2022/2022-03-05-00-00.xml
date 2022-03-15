@@ -8,7 +8,6 @@
             <column name="customer_id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <!--            <column name="customer_id" type="bigint"/>-->
         </createTable>
         <addForeignKeyConstraint baseTableName="shopping_cart"
                                  baseColumnNames="customer_id"
