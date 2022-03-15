@@ -1,0 +1,20 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="2022-03-03-00-00" author="dSolomakhin">
+        <createTable tableName="inventory_records">
+            <column name="new_year_toy_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="quantity" type="integer"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="inventory_records"
+                                 baseColumnNames="new_year_toy_id"
+                                 constraintName="inventory-records_id_new-year-toy_id"
+                                 referencedTableName="new_year_toys"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+</databaseChangeLog>
