@@ -1,18 +1,13 @@
 package com.simbirsoft.NewYearToyStore.service.implementation;
 
 import com.simbirsoft.NewYearToyStore.mappers.OrderDetailMapper;
-import com.simbirsoft.NewYearToyStore.mappers.OrderDetailMapperImpl;
-import com.simbirsoft.NewYearToyStore.models.dtos.NewYearToyDto;
 import com.simbirsoft.NewYearToyStore.models.dtos.OrderDetailDto;
-import com.simbirsoft.NewYearToyStore.models.dtos.OrderDto;
 import com.simbirsoft.NewYearToyStore.models.entity.NewYearToy;
-import com.simbirsoft.NewYearToyStore.models.entity.Order;
 import com.simbirsoft.NewYearToyStore.models.entity.OrderDetail;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.NewYearToyRepository;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.OrderDetailRepository;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.OrderRepository;
 import com.simbirsoft.NewYearToyStore.service.OrderDetailService;
-import com.simbirsoft.NewYearToyStore.service.OrderService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -48,8 +43,8 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     @Override
     public Optional<OrderDetailDto> saveOrderDetail(OrderDetailDto orderDetailDto) {
         if (!isPresentSameOrderDetailInDb(orderDetailDto)) {
-            OrderDetail orderDetailToSave = orderDetailMapper.updateOrderDetail(orderDetailDto, new OrderDetail(), orderRepository, newYearToyRepository);
-            OrderDetailDto orderDetailDtoFromDB = orderDetailMapper.updateOrderDetailDto(orderDetailRepository.save(orderDetailToSave), new OrderDetailDto());
+            OrderDetail orderDetailToSave = orderDetailMapper.dtoToEntity(orderDetailDto, new OrderDetail(), orderRepository, newYearToyRepository);
+            OrderDetailDto orderDetailDtoFromDB = orderDetailMapper.entityToDto(orderDetailRepository.save(orderDetailToSave), new OrderDetailDto());
 
             return Optional.of(orderDetailDtoFromDB);
         }
@@ -62,7 +57,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
         Optional<OrderDetail> orderDetailOptional = orderDetailRepository.findById(id);
 
         if (orderDetailOptional.isPresent()) {
-            OrderDetailDto orderDetailDto = orderDetailMapper.updateOrderDetailDto(orderDetailOptional.get(), new OrderDetailDto());
+            OrderDetailDto orderDetailDto = orderDetailMapper.entityToDto(orderDetailOptional.get(), new OrderDetailDto());
 
             return Optional.of(orderDetailDto);
         }

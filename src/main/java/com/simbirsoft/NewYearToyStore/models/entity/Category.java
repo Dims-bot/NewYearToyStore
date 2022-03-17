@@ -7,31 +7,15 @@ import javax.persistence.*;
 
 
 @Entity
-@FieldDefaults(level = AccessLevel.PROTECTED)
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Table(name = "categories")
 public class Category extends BaseDomainEntity {
+
     @Column
     String categoryName;
 
-    public Category() {
-    }
-
-    public Category(String categoryName, Long id) {
-        this.categoryName = categoryName;
-        this.id = id;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    public Long getId() {
-        return id;
-    }
 }

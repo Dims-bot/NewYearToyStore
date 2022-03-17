@@ -28,10 +28,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Optional<OrderDto> saveOrder(OrderDto orderDto) {
-        Order orderToSave = orderMapper.updateOrder(orderDto, new Order(), customerRepository);
+        Order orderToSave = orderMapper.dtoToEntity(orderDto, new Order(), customerRepository);
         boolean isPresentOrderInDb = orderRepository.existsByCreated(orderToSave.getCreated());
         if (!isPresentOrderInDb) {
-            OrderDto orderDtoFromDb = orderMapper.updateOrderDto(orderRepository.save(orderToSave), new OrderDto());
+            OrderDto orderDtoFromDb = orderMapper.entityToDto(orderRepository.save(orderToSave), new OrderDto());
 
             return Optional.of(orderDtoFromDb);
         }
@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
     public Optional<OrderDto> getOrder(Long id) {
         Optional<Order> orderDtoOptional = orderRepository.findById(id);
         if (orderDtoOptional.isPresent()) {
-            OrderDto orderDto = orderMapper.updateOrderDto(orderDtoOptional.get(), new OrderDto());
+            OrderDto orderDto = orderMapper.entityToDto(orderDtoOptional.get(), new OrderDto());
 
             return Optional.of(orderDto);
         }

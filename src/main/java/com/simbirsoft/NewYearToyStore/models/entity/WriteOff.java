@@ -1,9 +1,7 @@
 package com.simbirsoft.NewYearToyStore.models.entity;
 
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.Column;
@@ -12,7 +10,9 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@FieldDefaults(level = AccessLevel.PROTECTED)
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Table(name = "write_offs")
@@ -24,15 +24,15 @@ public class WriteOff extends BaseDomainEntity {
     @Column
     Boolean isApproved;
 
-    public WriteOff() {
+//    public WriteOff() {
+//
+//    }
 
-    }
-
-    public WriteOff(Long id, LocalDateTime created, Boolean isApproved) {
-        super(id);
-        this.created = created;
-        this.isApproved = isApproved;
-    }
+//    public WriteOff(Long id, LocalDateTime created, Boolean isApproved) {
+//        super(id);
+//        this.created = created;
+//        this.isApproved = isApproved;
+//    }
 
     public Long getId() {
         return id;

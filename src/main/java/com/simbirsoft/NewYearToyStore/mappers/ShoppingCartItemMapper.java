@@ -16,20 +16,20 @@ public interface ShoppingCartItemMapper {
 
     @Mapping(target = "newYearToyId", ignore = true)
     @Mapping(target = "shoppingCartId", ignore = true)
-    ShoppingCartItemDto updateShoppingCartItemDto(ShoppingCartItem shoppingCartItem,
-                                                  @MappingTarget ShoppingCartItemDto shoppingCartItemDto);
+    ShoppingCartItemDto entityToDto(ShoppingCartItem shoppingCartItem,
+                                    @MappingTarget ShoppingCartItemDto shoppingCartItemDto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "newYearToy", ignore = true)
     @Mapping(target = "shoppingCart", ignore = true)
-    ShoppingCartItem updateShoppingCartItem(ShoppingCartItemDto shoppingCartItemDto,
-                                            @MappingTarget ShoppingCartItem shoppingCartItem,
-                                            @Context NewYearToyRepository newYearToyRepository,
-                                            @Context ShoppingCartRepository shoppingCartRepository);
+    ShoppingCartItem dtoToEntity(ShoppingCartItemDto shoppingCartItemDto,
+                                 @MappingTarget ShoppingCartItem shoppingCartItem,
+                                 @Context NewYearToyRepository newYearToyRepository,
+                                 @Context ShoppingCartRepository shoppingCartRepository);
 
 
     @AfterMapping
-    default void afterUpdateShoppingCartItemDto(ShoppingCartItem shoppingCartItem, @MappingTarget ShoppingCartItemDto shoppingCartItemDto) {
+    default void afterEntityToDto(ShoppingCartItem shoppingCartItem, @MappingTarget ShoppingCartItemDto shoppingCartItemDto) {
         shoppingCartItemDto.setShoppingCartId(shoppingCartItem.getShoppingCart() == null ? null : shoppingCartItem.getShoppingCart().getId());
         shoppingCartItemDto.setNewYearToyId(shoppingCartItem.getNewYearToy() == null ? null : shoppingCartItem.getNewYearToy().getId());
 
@@ -37,10 +37,10 @@ public interface ShoppingCartItemMapper {
 
 
     @AfterMapping
-    default void afterUpdateShoppingCartItem(ShoppingCartItemDto shoppingCartItemDto,
-                                             @MappingTarget ShoppingCartItem shoppingCartItem,
-                                             @Context NewYearToyRepository newYearToyRepository,
-                                             @Context ShoppingCartRepository shoppingCartRepository) {
+    default void afterDtoToEntity(ShoppingCartItemDto shoppingCartItemDto,
+                                  @MappingTarget ShoppingCartItem shoppingCartItem,
+                                  @Context NewYearToyRepository newYearToyRepository,
+                                  @Context ShoppingCartRepository shoppingCartRepository) {
 
         if (shoppingCartItemDto.getNewYearToyId() != null && (shoppingCartItem.getNewYearToy() == null || !shoppingCartItem.getNewYearToy().getId().equals(shoppingCartItemDto.getNewYearToyId()))) {
             final NewYearToy newYearToy = newYearToyRepository.findById(shoppingCartItemDto.getNewYearToyId())

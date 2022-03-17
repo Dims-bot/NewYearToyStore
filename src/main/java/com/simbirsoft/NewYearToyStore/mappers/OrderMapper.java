@@ -17,12 +17,12 @@ public interface OrderMapper {
 
     @Mapping(source = "created", target = "created", qualifiedByName = "localDateTimeString")
     @Mapping(target = "customerId", ignore = true)
-    OrderDto updateOrderDto(Order order, @MappingTarget OrderDto orderDto);
+    OrderDto entityToDto(Order order, @MappingTarget OrderDto orderDto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "customer", ignore = true)
     @Mapping(source = "created", target = "created", qualifiedByName = "localDateTime")
-    Order updateOrder(OrderDto orderDto, @MappingTarget Order order, @Context CustomerRepository customerRepository);
+    Order dtoToEntity(OrderDto orderDto, @MappingTarget Order order, @Context CustomerRepository customerRepository);
 
     @Named("localDateTime")
     static LocalDateTime localDateTime(String localDateTime) {
@@ -34,7 +34,7 @@ public interface OrderMapper {
     }
 
     @AfterMapping
-    default void afterOrderDto(Order order, @MappingTarget OrderDto orderDto) {
+    default void afterEntityToDto(Order order, @MappingTarget OrderDto orderDto) {
         orderDto.setCustomerId(order.getCustomer() == null ? null : order.getCustomer().getId());
     }
 
@@ -47,7 +47,7 @@ public interface OrderMapper {
     }
 
     @AfterMapping
-    default void afterUpdateOrder(OrderDto orderDto,
+    default void afterDtoToEntity(OrderDto orderDto,
                                   @MappingTarget Order order,
                                   @Context CustomerRepository customerRepository) {
         if (orderDto.getCustomerId() != null && (order.getCustomer() == null || !order.getCustomer().getId().equals(orderDto.getCustomerId()))) {

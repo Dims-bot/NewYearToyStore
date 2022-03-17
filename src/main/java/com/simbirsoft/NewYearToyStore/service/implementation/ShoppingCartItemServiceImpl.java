@@ -3,7 +3,6 @@ package com.simbirsoft.NewYearToyStore.service.implementation;
 import com.simbirsoft.NewYearToyStore.mappers.ShoppingCartItemMapper;
 import com.simbirsoft.NewYearToyStore.models.dtos.ShoppingCartItemDto;
 import com.simbirsoft.NewYearToyStore.models.entity.NewYearToy;
-import com.simbirsoft.NewYearToyStore.models.entity.ShoppingCart;
 import com.simbirsoft.NewYearToyStore.models.entity.ShoppingCartItem;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.NewYearToyRepository;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.ShoppingCartItemRepository;
@@ -43,8 +42,8 @@ public class ShoppingCartItemServiceImpl implements ShoppingCartItemService {
                 .map(NewYearToy::getId)
                 .anyMatch(x -> x.equals(shoppingCartItemDto.getNewYearToyId()));
         if (!isPresentSameShoppingCartItemInDb) {
-            ShoppingCartItem shoppingCartItemToSave = shoppingCartItemMapper.updateShoppingCartItem(shoppingCartItemDto, new ShoppingCartItem(), newYearToyRepository, shoppingCartRepository);
-            ShoppingCartItemDto shoppingCartItemDtoFromDb = shoppingCartItemMapper.updateShoppingCartItemDto(shoppingCartItemRepository.save(shoppingCartItemToSave), new ShoppingCartItemDto());
+            ShoppingCartItem shoppingCartItemToSave = shoppingCartItemMapper.dtoToEntity(shoppingCartItemDto, new ShoppingCartItem(), newYearToyRepository, shoppingCartRepository);
+            ShoppingCartItemDto shoppingCartItemDtoFromDb = shoppingCartItemMapper.entityToDto(shoppingCartItemRepository.save(shoppingCartItemToSave), new ShoppingCartItemDto());
 
             return Optional.of(shoppingCartItemDtoFromDb);
         }
@@ -56,7 +55,7 @@ public class ShoppingCartItemServiceImpl implements ShoppingCartItemService {
     public Optional<ShoppingCartItemDto> getShoppingCartItem(Long id) {
         Optional<ShoppingCartItem> shoppingCartItemOptional = shoppingCartItemRepository.findById(id);
         if (shoppingCartItemOptional.isPresent()) {
-            ShoppingCartItemDto shoppingCartItemDto = shoppingCartItemMapper.updateShoppingCartItemDto(shoppingCartItemOptional.get(), new ShoppingCartItemDto());
+            ShoppingCartItemDto shoppingCartItemDto = shoppingCartItemMapper.entityToDto(shoppingCartItemOptional.get(), new ShoppingCartItemDto());
             return Optional.of(shoppingCartItemDto);
         }
 
@@ -70,7 +69,7 @@ public class ShoppingCartItemServiceImpl implements ShoppingCartItemService {
         if (shoppingCartItemRepository.existsById(idShoppingCartItemDto)) {
             ShoppingCartItem shoppingCartItemToUpdate = shoppingCartItemRepository.getById(idShoppingCartItemDto);
             shoppingCartItemToUpdate.setQuantity(shoppingCartItemDtoForUpdate.getQuantity());
-            ShoppingCartItemDto shoppingCartItemDtoUpdated = shoppingCartItemMapper.updateShoppingCartItemDto(shoppingCartItemRepository.save(shoppingCartItemToUpdate), new ShoppingCartItemDto());
+            ShoppingCartItemDto shoppingCartItemDtoUpdated = shoppingCartItemMapper.entityToDto(shoppingCartItemRepository.save(shoppingCartItemToUpdate), new ShoppingCartItemDto());
 
             return Optional.of(shoppingCartItemDtoUpdated);
         }

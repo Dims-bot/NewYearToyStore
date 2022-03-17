@@ -2,32 +2,30 @@ package com.simbirsoft.NewYearToyStore.controllers;
 
 import com.simbirsoft.NewYearToyStore.models.dtos.CategoryDtoNew;
 import com.simbirsoft.NewYearToyStore.models.dtos.CustomerDto;
-import com.simbirsoft.NewYearToyStore.models.dtos.CustomerDtoForRegistration;
-import com.simbirsoft.NewYearToyStore.service.CategoryService;
+import com.simbirsoft.NewYearToyStore.models.dtos.RegistrationDto;
 import com.simbirsoft.NewYearToyStore.service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true )
 @RequestMapping("/api/customers")
 public class CustomerController {
 
-    private CustomerService customerService;
-
-    @Autowired
-    public CustomerController(CustomerService customerService, CategoryService categoryService) {
-        this.customerService = customerService;
-    }
+    CustomerService customerService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addCustomer(@RequestBody CustomerDtoForRegistration customerDtoForRegistration) {
-        Optional<CustomerDto> customerDtoOptional = customerService.saveCustomer(customerDtoForRegistration);
+    public ResponseEntity<?> addCustomer(@RequestBody RegistrationDto registrationDto) {
+        Optional<CustomerDto> customerDtoOptional = customerService.saveCustomer(registrationDto);
         return customerDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(customerDtoOptional) :
-                ResponseEntity.badRequest().body("Customer with email " + customerDtoForRegistration.getEmail() + " is already in the database");
+                ResponseEntity.status(422).body("Customer with email " + registrationDto.getEmail() + " is already in the database");
 
     }
 
@@ -36,16 +34,16 @@ public class CustomerController {
         boolean isPresentCustomer = customerService.deleteCustomer(id);
         return isPresentCustomer ?
                 ResponseEntity.ok().body("Customer with id " + id + " was deleted") :
-                ResponseEntity.badRequest().body("Invalid user id: " + id);
+                ResponseEntity.status(422).body("Invalid customer id: " + id);
 
     }
 
-    @RequestMapping(value = "/{email}/customer", method = RequestMethod.GET)
+    @RequestMapping(value = "/customer/{email}", method = RequestMethod.GET)
     public ResponseEntity<?> getCustomer(@PathVariable String email) {
         Optional<CustomerDto> customerDtoOptional = customerService.getCustomerProfile(email);
         return customerDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(customerDtoOptional) :
-                ResponseEntity.badRequest().body("Invalid user email:" + email);
+                ResponseEntity.status(422).body("Invalid customer email:" + email);
 
     }
 
@@ -54,14 +52,8 @@ public class CustomerController {
         Optional<CustomerDto> customerDtoOptional = customerService.updateCustomer(customerDto);
         return customerDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(customerDtoOptional) :
-                ResponseEntity.badRequest().body("Invalid user email:" + customerDto.getEmail());
+                ResponseEntity.status(422).body("Invalid customer email:" + customerDto.getEmail());
 
-    }
-
-    @PostMapping("/toys/add")
-    public ResponseEntity<?> addNewYearToy(@RequestBody CategoryDtoNew categoryDtoNew) {
-        String name = categoryDtoNew.getCategoryName();
-        return ResponseEntity.ok().body(name);
     }
 
 

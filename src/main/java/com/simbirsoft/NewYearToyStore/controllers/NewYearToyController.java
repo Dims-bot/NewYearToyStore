@@ -2,6 +2,9 @@ package com.simbirsoft.NewYearToyStore.controllers;
 
 import com.simbirsoft.NewYearToyStore.models.dtos.NewYearToyDto;
 import com.simbirsoft.NewYearToyStore.service.NewYearToyService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,15 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true )
 @RequestMapping("/api/toys")
 public class NewYearToyController {
 
-    private NewYearToyService newYearToyService;
-
-    @Autowired
-    public NewYearToyController(NewYearToyService newYearToyService) {
-        this.newYearToyService = newYearToyService;
-    }
+    NewYearToyService newYearToyService;
 
     @PostMapping("/add")
     public ResponseEntity<?> addNewYearToy(@RequestBody NewYearToyDto newYearToyDto) {
@@ -31,7 +31,7 @@ public class NewYearToyController {
         Optional<NewYearToyDto> newYearToyDtoOptional = newYearToyService.getNewYearToy(id);
         return newYearToyDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(newYearToyDtoOptional) :
-                ResponseEntity.badRequest().body("Invalid NewYearToy id: " + id);
+                ResponseEntity.status(422).body("Invalid NewYearToy id: " + id);
     }
 
 
@@ -40,7 +40,7 @@ public class NewYearToyController {
         Optional<NewYearToyDto> newYearToyDtoOptional = newYearToyService.updateNewYearToy(newYearToyDto);
         return newYearToyDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(newYearToyDtoOptional):
-                ResponseEntity.badRequest().body("Invalid NewYearToy id: " + newYearToyDto.getId() + " or Category Id " + newYearToyDto.getCategoryId());
+                ResponseEntity.status(422).body("Invalid NewYearToy id: " + newYearToyDto.getId() + " or Category Id " + newYearToyDto.getCategoryId());
     }
 
 
@@ -49,7 +49,7 @@ public class NewYearToyController {
         boolean isPresentNewYearToy = newYearToyService.deleteNewYearToy(id);
         return isPresentNewYearToy ?
                 ResponseEntity.ok().body("NewYearToy with id " + id + " was deleted"):
-                ResponseEntity.badRequest().body("Invalid NewYearToy id: " + id);
+                ResponseEntity.status(422).body("Invalid NewYearToy id: " + id);
     }
 
 

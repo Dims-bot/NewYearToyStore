@@ -12,18 +12,18 @@ import org.springframework.web.server.ResponseStatusException;
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface InventoryRecordMapper {
-    InventoryRecordDto updateInventoryRecordDto(InventoryRecord inventoryRecord,
-                                                @MappingTarget InventoryRecordDto inventoryRecordDto);
+    InventoryRecordDto entityToDto(InventoryRecord inventoryRecord,
+                                   @MappingTarget InventoryRecordDto inventoryRecordDto);
 
     @Mapping(target = "newYearToy", ignore = true)
-    InventoryRecord updateInventoryRecord(InventoryRecordDto inventoryRecordDto,
-                                          @MappingTarget InventoryRecord inventoryRecord,
-                                          @Context NewYearToyRepository newYearToyRepository);
+    InventoryRecord dtoToEntity(InventoryRecordDto inventoryRecordDto,
+                                @MappingTarget InventoryRecord inventoryRecord,
+                                @Context NewYearToyRepository newYearToyRepository);
 
     @AfterMapping
-    default void afterUpdateInventoryRecord(InventoryRecordDto inventoryRecordDto,
-                                            @MappingTarget InventoryRecord inventoryRecord,
-                                            @Context NewYearToyRepository newYearToyRepository) {
+    default void afterDtoToEntity(InventoryRecordDto inventoryRecordDto,
+                                  @MappingTarget InventoryRecord inventoryRecord,
+                                  @Context NewYearToyRepository newYearToyRepository) {
         if (inventoryRecordDto.getId() != null && (inventoryRecord.getNewYearToy() == null || !inventoryRecord.getNewYearToy().getId().equals(inventoryRecordDto.getId()))) {
             final NewYearToy newYearToy = newYearToyRepository.findById(inventoryRecord.getId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "NewYearToy not found"));

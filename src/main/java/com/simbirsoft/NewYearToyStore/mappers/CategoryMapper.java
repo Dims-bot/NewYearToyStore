@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
-    CategoryDto CategoryToDto(Category category);
+    CategoryDto entityToDto(Category category);
 
-    Category categoryDtoNewToCategory(CategoryDtoNew categoryDtoNew);
+    Category dtoToEntity(CategoryDtoNew categoryDtoNew);
 }

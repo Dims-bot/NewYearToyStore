@@ -2,6 +2,9 @@ package com.simbirsoft.NewYearToyStore.controllers;
 
 import com.simbirsoft.NewYearToyStore.models.dtos.OrderDto;
 import com.simbirsoft.NewYearToyStore.service.OrderService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,13 +13,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/orders")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true )
 public class OrderController {
-    private OrderService orderService;
 
-    @Autowired
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
+    OrderService orderService;
 
     @PostMapping("/add")
     public ResponseEntity<?> addOrder(@RequestBody OrderDto orderDto) {
@@ -24,7 +25,7 @@ public class OrderController {
 
         return orderDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(orderDtoOptional):
-                ResponseEntity.badRequest().body("Order created " + orderDto.getCreated() + "already in DB");
+                ResponseEntity.status(422).body("Order created " + orderDto.getCreated() + "already exist");
 
     }
 
@@ -33,7 +34,7 @@ public class OrderController {
         Optional<OrderDto> orderDtoOptional = orderService.getOrder(id);
         return orderDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(orderDtoOptional) :
-                ResponseEntity.badRequest().body("Invalid Order id: " + id);
+                ResponseEntity.status(422).body("Invalid Order id: " + id);
 
     }
 
@@ -42,6 +43,6 @@ public class OrderController {
         boolean isPresentQAndDeletedOrder = orderService.deleteOrder(id);
         return isPresentQAndDeletedOrder ?
                 ResponseEntity.ok().body("Order with id " + id + " was deleted"):
-                ResponseEntity.badRequest().body("Invalid Order id: " + id);
+                ResponseEntity.status(422).body("Invalid Order id: " + id);
     }
 }

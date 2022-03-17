@@ -2,7 +2,7 @@ package com.simbirsoft.NewYearToyStore.service.implementation;
 
 import com.simbirsoft.NewYearToyStore.mappers.CustomerMapper;
 import com.simbirsoft.NewYearToyStore.models.dtos.CustomerDto;
-import com.simbirsoft.NewYearToyStore.models.dtos.CustomerDtoForRegistration;
+import com.simbirsoft.NewYearToyStore.models.dtos.RegistrationDto;
 import com.simbirsoft.NewYearToyStore.models.entity.Customer;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.CustomerRepository;
 import com.simbirsoft.NewYearToyStore.service.CustomerService;
@@ -24,10 +24,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Optional<CustomerDto> saveCustomer(CustomerDtoForRegistration customerDtoForRegistration) {
-        if (!customerRepository.existsByEmail(customerDtoForRegistration.getEmail())) {
-            Customer customerModel = customerMapper.customerDtoForRegistrationToCustomer(customerDtoForRegistration);
-            CustomerDto customerDto = customerMapper.EntityToDto(customerRepository.save(customerModel));
+    public Optional<CustomerDto> saveCustomer(RegistrationDto registrationDto) {
+        if (!customerRepository.existsByEmail(registrationDto.getEmail())) {
+            Customer customerModel = customerMapper.dtoToEntity(registrationDto);
+            CustomerDto customerDto = customerMapper.entityToDto(customerRepository.save(customerModel));
 
             return Optional.of(customerDto);
         }
@@ -48,7 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Optional<CustomerDto> getCustomerProfile(String email) {
-        CustomerDto customerDto = customerMapper.EntityToDto(customerRepository.findByEmail(email));
+        CustomerDto customerDto = customerMapper.entityToDto(customerRepository.findByEmail(email));
 
         return Optional.ofNullable(customerDto);
 
@@ -62,7 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setFirstName(customerDtoForUpdate.getFirstName());
             customer.setLastName(customerDtoForUpdate.getLastName());
 
-            CustomerDto customerDto = customerMapper.EntityToDto(customerRepository.save(customer));
+            CustomerDto customerDto = customerMapper.entityToDto(customerRepository.save(customer));
 
             return Optional.of(customerDto);
         }

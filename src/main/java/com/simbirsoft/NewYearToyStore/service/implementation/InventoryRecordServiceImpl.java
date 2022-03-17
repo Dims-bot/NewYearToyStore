@@ -31,9 +31,9 @@ public class InventoryRecordServiceImpl implements InventoryRecordService {
 
     @Override
     public Optional<InventoryRecordDto> saveInventoryRecord(InventoryRecordDto newInventoryRecordDto) {
-        InventoryRecord inventoryRecordToSave = inventoryRecordMapper.updateInventoryRecord(newInventoryRecordDto, new InventoryRecord(), newYearToyRepository);
+        InventoryRecord inventoryRecordToSave = inventoryRecordMapper.dtoToEntity(newInventoryRecordDto, new InventoryRecord(), newYearToyRepository);
         InventoryRecord inventoryRecordNew = inventoryRecordRepository.save(inventoryRecordToSave);
-        InventoryRecordDto newInventoryRecordDtoFromDb = inventoryRecordMapper.updateInventoryRecordDto(inventoryRecordNew, new InventoryRecordDto());
+        InventoryRecordDto newInventoryRecordDtoFromDb = inventoryRecordMapper.entityToDto(inventoryRecordNew, new InventoryRecordDto());
 
         return Optional.of(newInventoryRecordDtoFromDb);
     }
@@ -42,7 +42,7 @@ public class InventoryRecordServiceImpl implements InventoryRecordService {
     public Optional<InventoryRecordDto> getInventoryRecordById(Long id) {
         Optional<InventoryRecord> inventoryRecordOptional = inventoryRecordRepository.findById(id);
         if (inventoryRecordOptional.isPresent()) {
-            InventoryRecordDto inventoryRecordDto = inventoryRecordMapper.updateInventoryRecordDto(inventoryRecordOptional.get(), new InventoryRecordDto());
+            InventoryRecordDto inventoryRecordDto = inventoryRecordMapper.entityToDto(inventoryRecordOptional.get(), new InventoryRecordDto());
             return Optional.of(inventoryRecordDto);
         }
         return Optional.empty();
@@ -55,7 +55,7 @@ public class InventoryRecordServiceImpl implements InventoryRecordService {
             InventoryRecord inventoryRecordToUpdate = inventoryRecordRepository.getById(idInventoryRecordDto);
             inventoryRecordToUpdate.setQuantity(inventoryRecordDtoForUpdate.getQuantity());
 
-            InventoryRecordDto inventoryRecordDtoUpdated = inventoryRecordMapper.updateInventoryRecordDto(inventoryRecordRepository.save(inventoryRecordToUpdate), new InventoryRecordDto());
+            InventoryRecordDto inventoryRecordDtoUpdated = inventoryRecordMapper.entityToDto(inventoryRecordRepository.save(inventoryRecordToUpdate), new InventoryRecordDto());
 
             return Optional.of(inventoryRecordDtoUpdated);
         }
@@ -91,7 +91,7 @@ public class InventoryRecordServiceImpl implements InventoryRecordService {
                 .collect(Collectors.toSet());
         if (!inventoryRecordDtoNotPresentDb.isEmpty()) {
             for (InventoryRecordDto inventoryRecordDto : inventoryRecordDtoNotPresentDb) {
-                InventoryRecord inventoryRecordToSave = inventoryRecordMapper.updateInventoryRecord(inventoryRecordDto, new InventoryRecord(), newYearToyRepository);
+                InventoryRecord inventoryRecordToSave = inventoryRecordMapper.dtoToEntity(inventoryRecordDto, new InventoryRecord(), newYearToyRepository);
                 inventoryRecordRepository.save(inventoryRecordToSave);
             }
         }

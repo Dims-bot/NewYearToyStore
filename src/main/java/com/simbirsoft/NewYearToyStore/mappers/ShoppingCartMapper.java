@@ -12,17 +12,17 @@ import org.springframework.web.server.ResponseStatusException;
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ShoppingCartMapper {
 
-    ShoppingCartDto updateShoppingCartDto(ShoppingCart shoppingCart, @MappingTarget ShoppingCartDto shoppingCartDto);
+    ShoppingCartDto entityToDto(ShoppingCart shoppingCart, @MappingTarget ShoppingCartDto shoppingCartDto);
 
     @Mapping(target = "customer", ignore = true)
-    ShoppingCart updateShoppingCart(ShoppingCartDto shoppingCartDto,
-                                    @MappingTarget ShoppingCart shoppingCart,
-                                    @Context CustomerRepository customerRepository);
+    ShoppingCart dtoToEntity(ShoppingCartDto shoppingCartDto,
+                             @MappingTarget ShoppingCart shoppingCart,
+                             @Context CustomerRepository customerRepository);
 
     @AfterMapping
-    default void afterUpdateShoppingCart(ShoppingCartDto shoppingCartDto,
-                                         @MappingTarget ShoppingCart shoppingCart,
-                                         @Context CustomerRepository customerRepository) {
+    default void afterDtoToEntity(ShoppingCartDto shoppingCartDto,
+                                  @MappingTarget ShoppingCart shoppingCart,
+                                  @Context CustomerRepository customerRepository) {
         if (shoppingCartDto.getId() != null && (shoppingCart.getCustomer() == null || !shoppingCart.getCustomer().getId().equals(shoppingCartDto.getId()))) {
             final Customer customer = customerRepository.findById(shoppingCart.getId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));

@@ -1,11 +1,8 @@
 package com.simbirsoft.NewYearToyStore.service.implementation;
 
 import com.simbirsoft.NewYearToyStore.mappers.WriteOffRecordMapper;
-import com.simbirsoft.NewYearToyStore.models.dtos.OrderDetailDto;
 import com.simbirsoft.NewYearToyStore.models.dtos.WriteOffRecordDto;
 import com.simbirsoft.NewYearToyStore.models.entity.NewYearToy;
-import com.simbirsoft.NewYearToyStore.models.entity.OrderDetail;
-import com.simbirsoft.NewYearToyStore.models.entity.WriteOff;
 import com.simbirsoft.NewYearToyStore.models.entity.WriteOffRecord;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.NewYearToyRepository;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.WriteOffRecordRepository;
@@ -41,8 +38,8 @@ public class WriteOffRecordServiceImpl implements WriteOffRecordService {
     @Override
     public Optional<WriteOffRecordDto> saveWriteOffRecord(WriteOffRecordDto writeOffRecordDto) {
         if (!isPresentSameWriteOffRecordInDb(writeOffRecordDto)) {
-            WriteOffRecord writeOffRecordToSave = writeOffRecordMapper.updateWriteOffRecord(writeOffRecordDto, new WriteOffRecord(), writeOffRepository, newYearToyRepository);
-            WriteOffRecordDto writeOffRecordDtoFromDB = writeOffRecordMapper.updateWriteOfRecordDto(writeOffRecordRepository.save(writeOffRecordToSave), new WriteOffRecordDto());
+            WriteOffRecord writeOffRecordToSave = writeOffRecordMapper.dtoToEntity(writeOffRecordDto, new WriteOffRecord(), writeOffRepository, newYearToyRepository);
+            WriteOffRecordDto writeOffRecordDtoFromDB = writeOffRecordMapper.entityToDto(writeOffRecordRepository.save(writeOffRecordToSave), new WriteOffRecordDto());
 
             return Optional.of(writeOffRecordDtoFromDB);
         }

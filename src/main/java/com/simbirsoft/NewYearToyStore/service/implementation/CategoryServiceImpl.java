@@ -27,8 +27,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Optional<CategoryDto> saveCategory(CategoryDtoNew categoryDtoNew) {
         if (!categoryRepository.existsByCategoryName(categoryDtoNew.getCategoryName())) {
-            Category categoryModel = categoryMapper.categoryDtoNewToCategory(categoryDtoNew);
-            CategoryDto categoryDto = categoryMapper.CategoryToDto(categoryRepository.save(categoryModel));
+            Category categoryModel = categoryMapper.dtoToEntity(categoryDtoNew);
+            CategoryDto categoryDto = categoryMapper.entityToDto(categoryRepository.save(categoryModel));
 
             return Optional.of(categoryDto);
         }
@@ -37,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Optional<CategoryDto> getCategoryByName(String categoryName) {
-        CategoryDto categoryDto = categoryMapper.CategoryToDto(categoryRepository.findByCategoryName(categoryName));
+        CategoryDto categoryDto = categoryMapper.entityToDto(categoryRepository.findByCategoryName(categoryName));
 
         return Optional.ofNullable(categoryDto);
     }
@@ -51,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
             Category categoryToUpdate = categoryOptionalToUpdate.get();
             categoryToUpdate.setCategoryName(categoryDtoForUpdate.getCategoryName());
 
-            CategoryDto categoryDto = categoryMapper.CategoryToDto(categoryRepository.save(categoryToUpdate));
+            CategoryDto categoryDto = categoryMapper.entityToDto(categoryRepository.save(categoryToUpdate));
 
             return Optional.of(categoryDto);
         }

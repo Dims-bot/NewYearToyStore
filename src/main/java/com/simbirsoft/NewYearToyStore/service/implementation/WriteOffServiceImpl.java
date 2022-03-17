@@ -24,10 +24,10 @@ public class WriteOffServiceImpl implements WriteOffService {
 
     @Override
     public Optional<WriteOffDto> saveWriteOff(WriteOffDto writeOffDto) {
-        WriteOff writeOffToSave = writeOffMapper.updateWriteOff(writeOffDto, new WriteOff());
+        WriteOff writeOffToSave = writeOffMapper.dtoToEntity(writeOffDto, new WriteOff());
         boolean isPresentWriteOff = writeOffRepository.existsByCreated(writeOffToSave.getCreated());
         if (!isPresentWriteOff) {
-            WriteOffDto writeOffDtoFromDb = writeOffMapper.updateWriteOffDto(writeOffRepository.save(writeOffToSave), new WriteOffDto());
+            WriteOffDto writeOffDtoFromDb = writeOffMapper.entityToDto(writeOffRepository.save(writeOffToSave), new WriteOffDto());
 
             return Optional.of(writeOffDtoFromDb);
 
@@ -39,7 +39,7 @@ public class WriteOffServiceImpl implements WriteOffService {
     public Optional<WriteOffDto> getWriteOff(Long id) {
         Optional<WriteOff> writeOffOptional = writeOffRepository.findById(id);
         if (writeOffOptional.isPresent()) {
-            WriteOffDto writeOffDto = writeOffMapper.updateWriteOffDto(writeOffOptional.get(), new WriteOffDto());
+            WriteOffDto writeOffDto = writeOffMapper.entityToDto(writeOffOptional.get(), new WriteOffDto());
 
             return Optional.of(writeOffDto);
         }

@@ -10,12 +10,12 @@ import javax.persistence.Column;
 @FieldDefaults(level = AccessLevel.PROTECTED)
 @Getter
 @Setter
-public class CustomerDtoForRegistration {
+public class RegistrationDto {
     String firstName;
     String lastName;
     String email;
 
-    public CustomerDtoForRegistration(String firstName, String lastName, String email) {
+    public RegistrationDto(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

@@ -1,6 +1,5 @@
 package com.simbirsoft.NewYearToyStore.service.implementation;
 
-import com.simbirsoft.NewYearToyStore.mappers.OrderMapper;
 import com.simbirsoft.NewYearToyStore.mappers.ShoppingCartMapper;
 import com.simbirsoft.NewYearToyStore.models.dtos.*;
 import com.simbirsoft.NewYearToyStore.models.entity.*;
@@ -9,7 +8,6 @@ import com.simbirsoft.NewYearToyStore.repository.abstracts.ShoppingCartItemRepos
 import com.simbirsoft.NewYearToyStore.repository.abstracts.ShoppingCartRepository;
 import com.simbirsoft.NewYearToyStore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -54,9 +52,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public Optional<ShoppingCartDto> saveShoppingCart(ShoppingCartDto shoppingCartDto) {
-        ShoppingCart shoppingCartToSave = shoppingCartMapper.updateShoppingCart(shoppingCartDto, new ShoppingCart(), customerRepository);
+        ShoppingCart shoppingCartToSave = shoppingCartMapper.dtoToEntity(shoppingCartDto, new ShoppingCart(), customerRepository);
         ShoppingCart shoppingCartNew = shoppingCartRepository.save(shoppingCartToSave);
-        ShoppingCartDto newShoppingCartDtoFromDb = shoppingCartMapper.updateShoppingCartDto(shoppingCartNew, new ShoppingCartDto());
+        ShoppingCartDto newShoppingCartDtoFromDb = shoppingCartMapper.entityToDto(shoppingCartNew, new ShoppingCartDto());
 
         return Optional.of(newShoppingCartDtoFromDb);
     }
@@ -67,7 +65,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         Optional<ShoppingCart> shoppingCartOptional = shoppingCartRepository.findById(id);
         if (shoppingCartOptional.isPresent()) {
-            ShoppingCartDto shoppingCartDto = shoppingCartMapper.updateShoppingCartDto(shoppingCartOptional.get(), new ShoppingCartDto());
+            ShoppingCartDto shoppingCartDto = shoppingCartMapper.entityToDto(shoppingCartOptional.get(), new ShoppingCartDto());
             return Optional.of(shoppingCartDto);
 
         }

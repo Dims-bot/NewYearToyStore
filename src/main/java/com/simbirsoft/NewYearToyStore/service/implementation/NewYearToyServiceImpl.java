@@ -29,8 +29,8 @@ public class NewYearToyServiceImpl implements NewYearToyService {
     @Override
     public Optional<NewYearToyDto> saveNewYearToy(NewYearToyDto newYearToyDto) {
 
-        NewYearToy newYearToyToSave = newYearToyMapper.updateNewYearToy(newYearToyDto, new NewYearToy(), categoryRepository);
-        NewYearToyDto newYearToyDtoFromDb = newYearToyMapper.updateNewYearToyDto(newYearToyRepository.save(newYearToyToSave), new NewYearToyDto());
+        NewYearToy newYearToyToSave = newYearToyMapper.dtoToEntity(newYearToyDto, new NewYearToy(), categoryRepository);
+        NewYearToyDto newYearToyDtoFromDb = newYearToyMapper.entityToDto(newYearToyRepository.save(newYearToyToSave), new NewYearToyDto());
 
         return Optional.of(newYearToyDtoFromDb);
     }
@@ -39,7 +39,7 @@ public class NewYearToyServiceImpl implements NewYearToyService {
     public Optional<NewYearToyDto> getNewYearToy(Long id) {
         Optional<NewYearToy> newYearToyOptional = newYearToyRepository.findById(id);
         if (newYearToyOptional.isPresent()) {
-            NewYearToyDto newYearToyDto = newYearToyMapper.updateNewYearToyDto(newYearToyOptional.get(), new NewYearToyDto());
+            NewYearToyDto newYearToyDto = newYearToyMapper.entityToDto(newYearToyOptional.get(), new NewYearToyDto());
             return Optional.of(newYearToyDto);
         }
 
@@ -57,7 +57,7 @@ public class NewYearToyServiceImpl implements NewYearToyService {
             Category categoryFromDto = categoryRepository.getById(newYearToyDtoNew.getCategoryId());
             newYearToyToUpdate.setCategory(categoryFromDto);
 
-            NewYearToyDto newYearToyDtoUpdated = newYearToyMapper.updateNewYearToyDto(newYearToyRepository.save(newYearToyToUpdate), new NewYearToyDto());
+            NewYearToyDto newYearToyDtoUpdated = newYearToyMapper.entityToDto(newYearToyRepository.save(newYearToyToUpdate), new NewYearToyDto());
 
             return Optional.of(newYearToyDtoUpdated);
         }

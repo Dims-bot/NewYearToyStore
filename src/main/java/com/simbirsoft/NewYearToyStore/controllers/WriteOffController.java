@@ -3,6 +3,9 @@ package com.simbirsoft.NewYearToyStore.controllers;
 
 import com.simbirsoft.NewYearToyStore.models.dtos.WriteOffDto;
 import com.simbirsoft.NewYearToyStore.service.WriteOffService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,22 +13,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true )
 @RequestMapping("/api/write_offs")
 public class WriteOffController {
 
-    private WriteOffService writeOffService;
-
-    @Autowired
-    public WriteOffController(WriteOffService writeOffService) {
-        this.writeOffService = writeOffService;
-    }
+    WriteOffService writeOffService;
 
     @PostMapping("/add")
     public ResponseEntity<?> addWriteOff(@RequestBody WriteOffDto writeOffDto) {
         Optional<WriteOffDto> writeOffDtoOptional = writeOffService.saveWriteOff(writeOffDto);
         return writeOffDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(writeOffDtoOptional) :
-                ResponseEntity.badRequest().body("Write-off created " + writeOffDto.getCreated() + "already in DB");
+                ResponseEntity.status(422).body("Write-off created " + writeOffDto.getCreated() + "already in DB");
     }
 
     @GetMapping("/{id}/write_off")
@@ -33,7 +33,7 @@ public class WriteOffController {
         Optional<WriteOffDto> writeOffDtoOptional = writeOffService.getWriteOff(id);
         return writeOffDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(writeOffDtoOptional) :
-                ResponseEntity.badRequest().body("Invalid WriteOff id: " + id);
+                ResponseEntity.status(422).body("Invalid WriteOff id: " + id);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -41,6 +41,6 @@ public class WriteOffController {
         boolean isPresentQAndDeletedOrder = writeOffService.deleteWriteOff(id);
         return isPresentQAndDeletedOrder ?
                 ResponseEntity.ok().body("WriteOff with id " + id + " was deleted") :
-                ResponseEntity.badRequest().body("Invalid WriteOff id: " + id);
+                ResponseEntity.status(422).body("Invalid WriteOff id: " + id);
     }
 }

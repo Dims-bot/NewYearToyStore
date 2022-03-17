@@ -13,11 +13,11 @@ import java.time.format.DateTimeFormatter;
 public interface WriteOffMapper {
 
     @Mapping(source = "created", target = "created", qualifiedByName = "localDateTimeString")
-    WriteOffDto updateWriteOffDto(WriteOff writeOff, @MappingTarget WriteOffDto writeOffDto);
+    WriteOffDto entityToDto(WriteOff writeOff, @MappingTarget WriteOffDto writeOffDto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "created", target = "created", qualifiedByName = "localDateTime")
-    WriteOff updateWriteOff(WriteOffDto writeOffDto, @MappingTarget WriteOff writeOff);
+    WriteOff dtoToEntity(WriteOffDto writeOffDto, @MappingTarget WriteOff writeOff);
 
     @Named("localDateTime")
     static LocalDateTime localDateTime(String localDateTime) {
