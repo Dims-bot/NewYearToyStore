@@ -9,7 +9,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="category_name" type="text">
-                <constraints unique="true"/>
+                <constraints unique="true" nullable="false"/>
             </column>
         </createTable>
     </changeSet>

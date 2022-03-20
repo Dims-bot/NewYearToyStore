@@ -9,22 +9,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true )
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrderController {
 
     OrderService orderService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addOrder(@RequestBody OrderDto orderDto) {
+    public ResponseEntity<?> addOrder(@Valid @RequestBody OrderDto orderDto) {
         Optional<OrderDto> orderDtoOptional = orderService.saveOrder(orderDto);
 
         return orderDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(orderDtoOptional):
+                ResponseEntity.ok().body(orderDtoOptional) :
                 ResponseEntity.status(422).body("Order created " + orderDto.getCreated() + "already exist");
 
     }
@@ -40,9 +41,9 @@ public class OrderController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
-        boolean isPresentQAndDeletedOrder = orderService.deleteOrder(id);
-        return isPresentQAndDeletedOrder ?
-                ResponseEntity.ok().body("Order with id " + id + " was deleted"):
-                ResponseEntity.status(422).body("Invalid Order id: " + id);
+        orderService.deleteOrder(id);
+
+        return ResponseEntity.ok().body("Order with id " + id + " was deleted");
+
     }
 }

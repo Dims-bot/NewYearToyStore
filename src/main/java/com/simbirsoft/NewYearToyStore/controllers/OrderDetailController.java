@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -20,7 +21,7 @@ public class OrderDetailController {
     OrderDetailService orderDetailService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addOrderDetail(@RequestBody OrderDetailDto orderDetailDto) {
+    public ResponseEntity<?> addOrderDetail(@Valid @RequestBody OrderDetailDto orderDetailDto) {
         Optional<OrderDetailDto> orderDetailDtoOptional = orderDetailService.saveOrderDetail(orderDetailDto);
         return orderDetailDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(orderDetailDtoOptional) :

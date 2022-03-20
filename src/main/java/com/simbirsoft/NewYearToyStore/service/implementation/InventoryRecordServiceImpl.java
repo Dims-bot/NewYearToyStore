@@ -6,6 +6,8 @@ import com.simbirsoft.NewYearToyStore.models.entity.InventoryRecord;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.InventoryRecordRepository;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.NewYearToyRepository;
 import com.simbirsoft.NewYearToyStore.service.InventoryRecordService;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,14 +17,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class InventoryRecordServiceImpl implements InventoryRecordService {
 
-    private InventoryRecordMapper inventoryRecordMapper;
-    private InventoryRecordRepository inventoryRecordRepository;
-    private NewYearToyRepository newYearToyRepository;
+    InventoryRecordMapper inventoryRecordMapper;
+    InventoryRecordRepository inventoryRecordRepository;
+    NewYearToyRepository newYearToyRepository;
 
     @Autowired
-    public InventoryRecordServiceImpl(InventoryRecordMapper inventoryRecordMapper, InventoryRecordRepository inventoryRecordRepository, NewYearToyRepository newYearToyRepository) {
+    public InventoryRecordServiceImpl(InventoryRecordMapper inventoryRecordMapper,
+                                      InventoryRecordRepository inventoryRecordRepository,
+                                      NewYearToyRepository newYearToyRepository) {
         this.inventoryRecordMapper = inventoryRecordMapper;
         this.inventoryRecordRepository = inventoryRecordRepository;
         this.newYearToyRepository = newYearToyRepository;
@@ -31,36 +36,40 @@ public class InventoryRecordServiceImpl implements InventoryRecordService {
 
     @Override
     public Optional<InventoryRecordDto> saveInventoryRecord(InventoryRecordDto newInventoryRecordDto) {
-        InventoryRecord inventoryRecordToSave = inventoryRecordMapper.dtoToEntity(newInventoryRecordDto, new InventoryRecord(), newYearToyRepository);
+        InventoryRecord inventoryRecordToSave = inventoryRecordMapper.dtoToEntity(newInventoryRecordDto,
+                new InventoryRecord(),
+                newYearToyRepository);
         InventoryRecord inventoryRecordNew = inventoryRecordRepository.save(inventoryRecordToSave);
-        InventoryRecordDto newInventoryRecordDtoFromDb = inventoryRecordMapper.entityToDto(inventoryRecordNew, new InventoryRecordDto());
+        InventoryRecordDto newInventoryRecordDtoFromDb = inventoryRecordMapper.entityToDto(inventoryRecordNew,
+                new InventoryRecordDto());
 
         return Optional.of(newInventoryRecordDtoFromDb);
     }
 
     @Override
     public Optional<InventoryRecordDto> getInventoryRecordById(Long id) {
-        Optional<InventoryRecord> inventoryRecordOptional = inventoryRecordRepository.findById(id);
-        if (inventoryRecordOptional.isPresent()) {
-            InventoryRecordDto inventoryRecordDto = inventoryRecordMapper.entityToDto(inventoryRecordOptional.get(), new InventoryRecordDto());
-            return Optional.of(inventoryRecordDto);
-        }
-        return Optional.empty();
+        InventoryRecord inventoryRecord = inventoryRecordRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("no EntityException"));
+
+        InventoryRecordDto inventoryRecordDto = inventoryRecordMapper.entityToDto(inventoryRecord,
+                new InventoryRecordDto());
+
+        return Optional.of(inventoryRecordDto);
+
     }
 
     @Override
     public Optional<InventoryRecordDto> updateInventoryRecord(InventoryRecordDto inventoryRecordDtoForUpdate) {
-        Long idInventoryRecordDto = inventoryRecordDtoForUpdate.getId();
-        if (inventoryRecordRepository.existsById(idInventoryRecordDto)) {
-            InventoryRecord inventoryRecordToUpdate = inventoryRecordRepository.getById(idInventoryRecordDto);
-            inventoryRecordToUpdate.setQuantity(inventoryRecordDtoForUpdate.getQuantity());
+        long id = inventoryRecordDtoForUpdate.getId();
+        InventoryRecord inventoryRecordToUpdate = inventoryRecordRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("no EntityException"));
+        inventoryRecordToUpdate.setQuantity(inventoryRecordDtoForUpdate.getQuantity());
 
-            InventoryRecordDto inventoryRecordDtoUpdated = inventoryRecordMapper.entityToDto(inventoryRecordRepository.save(inventoryRecordToUpdate), new InventoryRecordDto());
+        InventoryRecordDto inventoryRecordDto = inventoryRecordMapper
+                .entityToDto(inventoryRecordRepository.save(inventoryRecordToUpdate), new InventoryRecordDto());
 
-            return Optional.of(inventoryRecordDtoUpdated);
-        }
+        return Optional.of(inventoryRecordDto);
 
-        return Optional.empty();
     }
 
     @Override

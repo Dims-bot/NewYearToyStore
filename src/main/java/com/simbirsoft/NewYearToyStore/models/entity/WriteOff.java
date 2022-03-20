@@ -25,14 +25,13 @@ public class WriteOff extends BaseDomainEntity {
     Boolean isApproved;
 
 //    public WriteOff() {
-//
 //    }
 
-//    public WriteOff(Long id, LocalDateTime created, Boolean isApproved) {
-//        super(id);
-//        this.created = created;
-//        this.isApproved = isApproved;
-//    }
+    public WriteOff(Long id, LocalDateTime created,  Boolean isApproved) {
+        super(id);
+        this.created = created;
+        this.isApproved = isApproved;
+    }
 
     public Long getId() {
         return id;

@@ -7,20 +7,25 @@ import com.simbirsoft.NewYearToyStore.models.entity.NewYearToy;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.CategoryRepository;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.NewYearToyRepository;
 import com.simbirsoft.NewYearToyStore.service.NewYearToyService;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewYearToyServiceImpl implements NewYearToyService {
 
-    private NewYearToyMapper newYearToyMapper;
-    private NewYearToyRepository newYearToyRepository;
-    private CategoryRepository categoryRepository;
+    NewYearToyMapper newYearToyMapper;
+    NewYearToyRepository newYearToyRepository;
+    CategoryRepository categoryRepository;
 
     @Autowired
-    public NewYearToyServiceImpl(NewYearToyMapper newYearToyMapper, NewYearToyRepository newYearToyRepository, CategoryRepository categoryRepository) {
+    public NewYearToyServiceImpl(NewYearToyMapper newYearToyMapper,
+                                 NewYearToyRepository newYearToyRepository,
+                                 CategoryRepository categoryRepository) {
         this.newYearToyMapper = newYearToyMapper;
         this.newYearToyRepository = newYearToyRepository;
         this.categoryRepository = categoryRepository;
@@ -30,38 +35,40 @@ public class NewYearToyServiceImpl implements NewYearToyService {
     public Optional<NewYearToyDto> saveNewYearToy(NewYearToyDto newYearToyDto) {
 
         NewYearToy newYearToyToSave = newYearToyMapper.dtoToEntity(newYearToyDto, new NewYearToy(), categoryRepository);
-        NewYearToyDto newYearToyDtoFromDb = newYearToyMapper.entityToDto(newYearToyRepository.save(newYearToyToSave), new NewYearToyDto());
+        NewYearToyDto newYearToyDtoFromDb =
+                newYearToyMapper.entityToDto(newYearToyRepository.save(newYearToyToSave), new NewYearToyDto());
 
         return Optional.of(newYearToyDtoFromDb);
     }
 
     @Override
     public Optional<NewYearToyDto> getNewYearToy(Long id) {
-        Optional<NewYearToy> newYearToyOptional = newYearToyRepository.findById(id);
-        if (newYearToyOptional.isPresent()) {
-            NewYearToyDto newYearToyDto = newYearToyMapper.entityToDto(newYearToyOptional.get(), new NewYearToyDto());
-            return Optional.of(newYearToyDto);
-        }
+        NewYearToy newYearToy = newYearToyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("no EntityException"));
+        NewYearToyDto newYearToyDto = newYearToyMapper.entityToDto(newYearToy, new NewYearToyDto());
 
+        return Optional.of(newYearToyDto);
 
-        return Optional.empty();
     }
 
     @Override
     public Optional<NewYearToyDto> updateNewYearToy(NewYearToyDto newYearToyDtoNew) {
         Long idNewYearToyDto = newYearToyDtoNew.getId();
-        if (newYearToyRepository.existsById(idNewYearToyDto) && categoryRepository.existsById(newYearToyDtoNew.getCategoryId())) {
-            NewYearToy newYearToyToUpdate = newYearToyRepository.getById(idNewYearToyDto);
-            newYearToyToUpdate.setNameOfToy(newYearToyDtoNew.getNameOfToy());
-            newYearToyToUpdate.setPrice(newYearToyDtoNew.getPrice());
-            Category categoryFromDto = categoryRepository.getById(newYearToyDtoNew.getCategoryId());
-            newYearToyToUpdate.setCategory(categoryFromDto);
 
-            NewYearToyDto newYearToyDtoUpdated = newYearToyMapper.entityToDto(newYearToyRepository.save(newYearToyToUpdate), new NewYearToyDto());
+        NewYearToy newYearToyToUpdate = newYearToyRepository.findById(idNewYearToyDto)
+                .orElseThrow(() -> new RuntimeException("no EntityException"));
+        newYearToyToUpdate.setName(newYearToyDtoNew.getName());
+        newYearToyToUpdate.setPrice(newYearToyDtoNew.getPrice());
 
-            return Optional.of(newYearToyDtoUpdated);
-        }
-        return Optional.empty();
+        Category categoryFromDto = categoryRepository.findById(newYearToyDtoNew.getCategoryId()).
+                orElseThrow(() -> new RuntimeException("no EntityException"));
+        newYearToyToUpdate.setCategory(categoryFromDto);
+        NewYearToyDto newYearToyDtoUpdated =
+                newYearToyMapper.entityToDto(newYearToyRepository.save(newYearToyToUpdate), new NewYearToyDto());
+
+        return Optional.of(newYearToyDtoUpdated);
+
+
     }
 
     @Override

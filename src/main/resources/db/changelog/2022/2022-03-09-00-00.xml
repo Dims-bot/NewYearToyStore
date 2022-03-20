@@ -8,8 +8,12 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="created" type="timestamp"/>
-            <column name="is_approved" type="boolean"/>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_approved" type="boolean">
+                <constraints nullable="false"/>
+            </column>
 
         </createTable>
 

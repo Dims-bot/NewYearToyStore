@@ -14,5 +14,5 @@ public interface OrderDetailService {
 
     Optional<OrderDetailDto> updateOrderDetail(OrderDetailDto orderDetailDto);
 
-    boolean deleteOrderDetail(Long id);
+    void deleteOrderDetail(Long id);
 }

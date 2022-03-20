@@ -2,20 +2,22 @@ package com.simbirsoft.NewYearToyStore.service.implementation;
 
 import com.simbirsoft.NewYearToyStore.mappers.CategoryMapper;
 import com.simbirsoft.NewYearToyStore.models.dtos.CategoryDto;
-import com.simbirsoft.NewYearToyStore.models.dtos.CategoryDtoNew;
+import com.simbirsoft.NewYearToyStore.models.dtos.NewCategoryDto;
 import com.simbirsoft.NewYearToyStore.models.entity.Category;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.CategoryRepository;
 import com.simbirsoft.NewYearToyStore.service.CategoryService;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryServiceImpl implements CategoryService {
 
     CategoryRepository categoryRepository;
-
     CategoryMapper categoryMapper;
 
     @Autowired
@@ -25,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Optional<CategoryDto> saveCategory(CategoryDtoNew categoryDtoNew) {
+    public Optional<CategoryDto> saveCategory(NewCategoryDto categoryDtoNew) {
         if (!categoryRepository.existsByCategoryName(categoryDtoNew.getCategoryName())) {
             Category categoryModel = categoryMapper.dtoToEntity(categoryDtoNew);
             CategoryDto categoryDto = categoryMapper.entityToDto(categoryRepository.save(categoryModel));
@@ -37,9 +39,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Optional<CategoryDto> getCategoryByName(String categoryName) {
-        CategoryDto categoryDto = categoryMapper.entityToDto(categoryRepository.findByCategoryName(categoryName));
+        Category category = categoryRepository.findByCategoryName(categoryName).orElseThrow(()-> new RuntimeException("no EntityException"));
+        CategoryDto categoryDto = categoryMapper.entityToDto(category);
 
-        return Optional.ofNullable(categoryDto);
+        return Optional.of(categoryDto);
     }
 
     @Override
@@ -47,8 +50,8 @@ public class CategoryServiceImpl implements CategoryService {
 
         if (categoryRepository.existsById(categoryDtoForUpdate.getId()) &&
                 !categoryRepository.existsByCategoryName(categoryDtoForUpdate.getCategoryName())) {
-            Optional<Category> categoryOptionalToUpdate = categoryRepository.findById(categoryDtoForUpdate.getId());
-            Category categoryToUpdate = categoryOptionalToUpdate.get();
+            Category categoryToUpdate = categoryRepository.findById(categoryDtoForUpdate.getId())
+                    .orElseThrow(()-> new RuntimeException("no EntityException"));
             categoryToUpdate.setCategoryName(categoryDtoForUpdate.getCategoryName());
 
             CategoryDto categoryDto = categoryMapper.entityToDto(categoryRepository.save(categoryToUpdate));
@@ -59,12 +62,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public boolean deleteCategory(Long categoryId) {
-        if (categoryRepository.existsById(categoryId)) {
-            categoryRepository.deleteById(categoryId);
-            return true;
-        }
+    public void deleteCategory(Long id) {
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("no EntityException"));
+        categoryRepository.delete(category);
 
-        return false;
     }
 }

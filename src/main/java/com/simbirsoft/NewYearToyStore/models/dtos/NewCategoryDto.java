@@ -1,25 +1,23 @@
 package com.simbirsoft.NewYearToyStore.models.dtos;
 
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.lang.String;
 
-@FieldDefaults(level = AccessLevel.PROTECTED)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
-public class CategoryDtoNew {
+public class NewCategoryDto {
+
     String categoryName;
 
-    public CategoryDtoNew(String categoryName) {
+    public NewCategoryDto(String categoryName) {
         this.categoryName = categoryName;
     }
 
-    public CategoryDtoNew() {
+    public NewCategoryDto() {
     }
 
     public String getCategoryName() {

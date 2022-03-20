@@ -1,15 +1,16 @@
 package com.simbirsoft.NewYearToyStore.controllers;
 
 import com.simbirsoft.NewYearToyStore.models.dtos.CategoryDto;
-import com.simbirsoft.NewYearToyStore.models.dtos.CategoryDtoNew;
+import com.simbirsoft.NewYearToyStore.models.dtos.NewCategoryDto;
 import com.simbirsoft.NewYearToyStore.service.CategoryService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+//import javax.validation.Valid;
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -21,19 +22,18 @@ public class CategoryController {
     CategoryService categoryService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addCategory(@RequestBody CategoryDtoNew categoryDtoNew) {
+    public ResponseEntity<String> addCategory(@Valid @RequestBody NewCategoryDto categoryDtoNew) {
         Optional<CategoryDto> categoryDtoOptional = categoryService.saveCategory(categoryDtoNew);
         return categoryDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(categoryDtoOptional) :
+                ResponseEntity.ok("A category is created"):
                 ResponseEntity.status(422).body("Category " + categoryDtoNew.getCategoryName() + " is already in the database");
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
-        boolean isPresentCategory = categoryService.deleteCategory(id);
-        return isPresentCategory ?
-                ResponseEntity.ok().body("Category with id " + id + " was deleted") :
-                ResponseEntity.status(422).body("Invalid category id: " + id);
+        categoryService.deleteCategory(id);
+
+        return ResponseEntity.ok().body("Category with id " + id + " was deleted");
 
     }
 
@@ -47,7 +47,7 @@ public class CategoryController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateCategory(@RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<?> updateCategory(@Valid @RequestBody CategoryDto categoryDto) {
         Optional<CategoryDto> categoryDtoOptional = categoryService.updateCategory(categoryDto);
         return categoryDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(categoryDtoOptional) :

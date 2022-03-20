@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -21,7 +22,7 @@ public class ShoppingCartController {
     ShoppingCartService shoppingCartService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addShoppingCart(@RequestBody ShoppingCartDto shoppingCartDtoNew) {
+    public ResponseEntity<?> addShoppingCart(@Valid @RequestBody ShoppingCartDto shoppingCartDtoNew) {
         Optional<ShoppingCartDto> shoppingCartDtoOptional = shoppingCartService.saveShoppingCart(shoppingCartDtoNew);
         return shoppingCartDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(shoppingCartDtoOptional) :
@@ -30,8 +31,9 @@ public class ShoppingCartController {
 
     @PostMapping("/buy")
     public ResponseEntity<?> buy(@RequestBody ShoppingCartDto shoppingCartDtoToBuy) {
-        Optional<OrderDto> orderDtoOptional = shoppingCartService.buy(shoppingCartDtoToBuy);
-        return ResponseEntity.ok().body(orderDtoOptional);
+        //Optional<OrderDto> orderDtoOptional = shoppingCartService.buy(shoppingCartDtoToBuy);
+        shoppingCartService.buy(shoppingCartDtoToBuy);
+        return ResponseEntity.ok("The purchase is done");
     }
 
 

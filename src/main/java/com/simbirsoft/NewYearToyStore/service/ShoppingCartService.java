@@ -15,5 +15,5 @@ public interface ShoppingCartService {
 
     boolean deleteShoppingCart(Long shoppingCartId);
 
-    Optional<OrderDto> buy(ShoppingCartDto shoppingCartD);
+    void buy(ShoppingCartDto shoppingCartD);
 }

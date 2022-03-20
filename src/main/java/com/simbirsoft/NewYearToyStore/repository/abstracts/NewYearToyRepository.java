@@ -11,5 +11,9 @@ public interface NewYearToyRepository extends JpaRepository<NewYearToy, Long> {
 
     Optional<NewYearToy> findById(Long id);
 
+    NewYearToy getById(Long id);
+
+
+
 
 }

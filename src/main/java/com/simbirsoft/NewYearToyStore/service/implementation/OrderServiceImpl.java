@@ -7,17 +7,20 @@ import com.simbirsoft.NewYearToyStore.models.entity.Order;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.CustomerRepository;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.OrderRepository;
 import com.simbirsoft.NewYearToyStore.service.OrderService;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderServiceImpl implements OrderService {
 
-    private OrderMapper orderMapper;
-    private OrderRepository orderRepository;
-    private CustomerRepository customerRepository;
+    OrderMapper orderMapper;
+    OrderRepository orderRepository;
+    CustomerRepository customerRepository;
 
     @Autowired
     public OrderServiceImpl(OrderMapper orderMapper, OrderRepository orderRepository, CustomerRepository customerRepository) {
@@ -35,30 +38,25 @@ public class OrderServiceImpl implements OrderService {
 
             return Optional.of(orderDtoFromDb);
         }
-        return Optional.empty();
+        throw new RuntimeException("UniqEntityException");
 
     }
 
     @Override
     public Optional<OrderDto> getOrder(Long id) {
-        Optional<Order> orderDtoOptional = orderRepository.findById(id);
-        if (orderDtoOptional.isPresent()) {
-            OrderDto orderDto = orderMapper.entityToDto(orderDtoOptional.get(), new OrderDto());
+        Order order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("no EntityException"));
+        OrderDto orderDto = orderMapper.entityToDto(order, new OrderDto());
 
-            return Optional.of(orderDto);
-        }
-        return Optional.empty();
+        return Optional.of(orderDto);
+
     }
 
 
     @Override
-    public boolean deleteOrder(Long id) {
-        if (orderRepository.existsById(id)) {
-            orderRepository.deleteById(id);
-            return true;
-        }
+    public void deleteOrder(Long id) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("no EntityException"));
+        orderRepository.delete(order);
 
-        return false;
     }
 
 

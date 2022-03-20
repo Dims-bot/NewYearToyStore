@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface InventoryRecordMapper {
+
     InventoryRecordDto entityToDto(InventoryRecord inventoryRecord,
                                    @MappingTarget InventoryRecordDto inventoryRecordDto);
 

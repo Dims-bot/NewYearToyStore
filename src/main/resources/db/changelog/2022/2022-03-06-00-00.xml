@@ -8,8 +8,12 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="new_year_toy_id" type="bigint"/>
-            <column name="shopping_cart_id" type="bigint"/>
+            <column name="new_year_toy_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="shopping_cart_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
             <column name="quantity" type="integer"/>
         </createTable>
 

@@ -7,8 +7,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -20,7 +23,7 @@ public class NewYearToyController {
     NewYearToyService newYearToyService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addNewYearToy(@RequestBody NewYearToyDto newYearToyDto) {
+    public ResponseEntity<?> addNewYearToy(@Valid @RequestBody NewYearToyDto newYearToyDto) {
         Optional<NewYearToyDto> newYearToyDtoOptional = newYearToyService.saveNewYearToy(newYearToyDto);
 
         return ResponseEntity.ok().body(newYearToyDtoOptional);
@@ -36,7 +39,7 @@ public class NewYearToyController {
 
 
     @PutMapping("/update")
-    public  ResponseEntity<?> updateNewYearToy(@RequestBody NewYearToyDto newYearToyDto) {
+    public  ResponseEntity<?> updateNewYearToy(@Valid @RequestBody NewYearToyDto newYearToyDto) {
         Optional<NewYearToyDto> newYearToyDtoOptional = newYearToyService.updateNewYearToy(newYearToyDto);
         return newYearToyDtoOptional.isPresent() ?
                 ResponseEntity.ok().body(newYearToyDtoOptional):

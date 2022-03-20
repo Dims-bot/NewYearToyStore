@@ -8,18 +8,21 @@ import com.simbirsoft.NewYearToyStore.repository.abstracts.NewYearToyRepository;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.OrderDetailRepository;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.OrderRepository;
 import com.simbirsoft.NewYearToyStore.service.OrderDetailService;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
 
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderDetailServiceImpl implements OrderDetailService {
 
-    private OrderDetailRepository orderDetailRepository;
-    private OrderDetailMapper orderDetailMapper;
-    private NewYearToyRepository newYearToyRepository;
-    private OrderRepository orderRepository;
+    OrderDetailRepository orderDetailRepository;
+    OrderDetailMapper orderDetailMapper;
+    NewYearToyRepository newYearToyRepository;
+    OrderRepository orderRepository;
 
     public OrderDetailServiceImpl(OrderDetailRepository orderDetailRepository,
                                   OrderDetailMapper orderDetailMapper,
@@ -49,20 +52,16 @@ public class OrderDetailServiceImpl implements OrderDetailService {
             return Optional.of(orderDetailDtoFromDB);
         }
 
-        return Optional.empty();
+        throw new RuntimeException("no EntityException");
     }
 
     @Override
     public Optional<OrderDetailDto> getOrderDetail(Long id) {
-        Optional<OrderDetail> orderDetailOptional = orderDetailRepository.findById(id);
+        OrderDetail orderDetail = orderDetailRepository.findById(id).orElseThrow(() -> new RuntimeException("no EntityException"));
+        OrderDetailDto orderDetailDto = orderDetailMapper.entityToDto(orderDetail, new OrderDetailDto());
 
-        if (orderDetailOptional.isPresent()) {
-            OrderDetailDto orderDetailDto = orderDetailMapper.entityToDto(orderDetailOptional.get(), new OrderDetailDto());
+        return Optional.of(orderDetailDto);
 
-            return Optional.of(orderDetailDto);
-        }
-
-        return Optional.empty();
     }
 
     @Override
@@ -71,7 +70,10 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     }
 
     @Override
-    public boolean deleteOrderDetail(Long id) {
-        return false;
+    public void deleteOrderDetail(Long id) {
+        OrderDetail orderDetail = orderDetailRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("no EntityException"));
+        orderDetailRepository.delete(orderDetail);
+
     }
 }
