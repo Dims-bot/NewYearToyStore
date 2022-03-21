@@ -6,16 +6,13 @@ import com.simbirsoft.NewYearToyStore.service.InventoryRecordService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true )
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/api/inventories")
 public class InventoryRecordController {
 
@@ -23,11 +20,9 @@ public class InventoryRecordController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addInventoryRecord(@RequestBody InventoryRecordDto inventoryRecordDtoNew) {
-        Optional<InventoryRecordDto> inventoryRecordDtoOptional = inventoryRecordService.saveInventoryRecord(inventoryRecordDtoNew);
+        inventoryRecordService.saveInventoryRecord(inventoryRecordDtoNew);
 
-        return inventoryRecordDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(inventoryRecordDtoOptional) :
-                ResponseEntity.status(422).body("InventoryRecord with id " + inventoryRecordDtoNew.getId() + " is already in the DB");
+        return ResponseEntity.ok().build();
 
     }
 
@@ -38,35 +33,28 @@ public class InventoryRecordController {
         return ResponseEntity.ok().body("The invoice has been added to the database");
     }
 
-    @PostMapping("/wright_off")
-    public ResponseEntity<?> wrightOff(@RequestBody Set<InventoryRecordDto> inventoryRecordDtoSet) {
-        inventoryRecordService.wrightOff(inventoryRecordDtoSet);
-        return ResponseEntity.ok().body("Write-off of goods was made");
-    }
-
-
-    @GetMapping("/{id}/inventory")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getInventoryRecord(@PathVariable Long id) {
-        Optional<InventoryRecordDto> inventoryRecordDtoOptional = inventoryRecordService.getInventoryRecordById(id);
-        return inventoryRecordDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(inventoryRecordDtoOptional) :
-                ResponseEntity.status(422).body("Invalid NewYearToy id: " + id);
+        InventoryRecordDto inventoryRecordDto = inventoryRecordService.getInventoryRecordById(id);
+
+        return ResponseEntity.ok().body(inventoryRecordDto);
+
     }
 
     @PutMapping("/update")
-    public  ResponseEntity<?> updateInventoryRecord(@RequestBody InventoryRecordDto inventoryRecordDto) {
-        Optional<InventoryRecordDto> inventoryRecordDtoOptional = inventoryRecordService.updateInventoryRecord(inventoryRecordDto);
-        return inventoryRecordDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(inventoryRecordDtoOptional):
-                ResponseEntity.status(422).body("Invalid NewYearToy id: " + inventoryRecordDto.getId());
+    public ResponseEntity<?> updateInventoryRecord(@RequestBody InventoryRecordDto inventoryRecordDto) {
+        inventoryRecordService.updateInventoryRecord(inventoryRecordDto);
+
+        return ResponseEntity.ok().build();
+
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
-        boolean isPresentInventoryRecord = inventoryRecordService.deleteInventoryRecord(id);
-        return isPresentInventoryRecord ?
-                ResponseEntity.ok().body("InventoryRecord with id " + id + " was deleted"):
-                ResponseEntity.status(422).body("Invalid InventoryRecord id: " + id);
+        inventoryRecordService.deleteInventoryRecord(id);
+
+        return ResponseEntity.ok().body("InventoryRecord with id " + id + " was deleted");
+
     }
 
 

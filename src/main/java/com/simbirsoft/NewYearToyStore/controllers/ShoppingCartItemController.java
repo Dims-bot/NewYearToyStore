@@ -5,16 +5,14 @@ import com.simbirsoft.NewYearToyStore.service.ShoppingCartItemService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true )
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/api/shopping_cart_items")
 public class ShoppingCartItemController {
 
@@ -22,40 +20,32 @@ public class ShoppingCartItemController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addShoppingCartItem(@Valid @RequestBody ShoppingCartItemDto shoppingCartItemDto) {
-        Optional<ShoppingCartItemDto> shoppingCartItemDtoOptional = service.saveShoppingCartItem(shoppingCartItemDto);
-        return shoppingCartItemDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(shoppingCartItemDtoOptional) :
-                ResponseEntity.status(422)
-                        .body("ShoppingCartItem with shoppingCartId " + shoppingCartItemDto.getShoppingCartId()
-                                + " and NewYearToyId " + shoppingCartItemDto.getNewYearToyId() + " already in DB");
+        service.saveShoppingCartItem(shoppingCartItemDto);
+
+        return ResponseEntity.ok().build();
+
     }
 
-    @GetMapping("/{id}/shopping_cart_item")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getShoppingCartItem(@PathVariable Long id) {
-        Optional<ShoppingCartItemDto> shoppingCartItemDtoOptional = service.getShoppingCartItem(id);
-        return shoppingCartItemDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(shoppingCartItemDtoOptional) :
-                ResponseEntity.status(422).body("Invalid ShoppingCartItem id: " + id);
+        ShoppingCartItemDto shoppingCartItemDto = service.getShoppingCartItem(id);
+
+        return ResponseEntity.ok().body(shoppingCartItemDto);
 
     }
-
 
     @PutMapping("/update")
     public ResponseEntity<?> updateShoppingCartItem(@Valid @RequestBody ShoppingCartItemDto shoppingCartItemDto) {
-        Optional<ShoppingCartItemDto> shoppingCartItemDtoOptional = service.updateShoppingCartItem(shoppingCartItemDto);
-        return shoppingCartItemDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(shoppingCartItemDtoOptional) :
-                ResponseEntity.status(422).body("Invalid ShoppingCartItem id: " + shoppingCartItemDto.getId());
+        service.updateShoppingCartItem(shoppingCartItemDto);
+        return ResponseEntity.ok().build();
 
     }
 
-
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
-        boolean isPresentAndDeletedShoppingCartItem = service.deleteShoppingCartItem(id);
-        return isPresentAndDeletedShoppingCartItem ?
-                ResponseEntity.ok().body("ShoppingCartItem with id " + id + " was deleted") :
-                ResponseEntity.status(422).body("Invalid InventoryRecord id: " + id);
+        service.deleteShoppingCartItem(id);
+
+        return ResponseEntity.ok().body("ShoppingCartItem with id " + id + " was deleted");
 
     }
 }

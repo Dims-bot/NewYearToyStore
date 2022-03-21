@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface NewYearToyService {
 
-    Optional<NewYearToyDto> saveNewYearToy(NewYearToyDto newYearToyDto);
+    void saveNewYearToy(NewYearToyDto newYearToyDto);
 
-    Optional<NewYearToyDto> getNewYearToy(Long id);
+    NewYearToyDto getNewYearToy(Long id);
 
-    Optional<NewYearToyDto> updateNewYearToy(NewYearToyDto newYearToyDto);
+    void updateNewYearToy(NewYearToyDto newYearToyDto);
 
-    boolean deleteNewYearToy(Long id);
+     void deleteNewYearToy(Long id);
 }

@@ -50,7 +50,8 @@ public interface OrderMapper {
     default void afterDtoToEntity(OrderDto orderDto,
                                   @MappingTarget Order order,
                                   @Context CustomerRepository customerRepository) {
-        if (orderDto.getCustomerId() != null && (order.getCustomer() == null || !order.getCustomer().getId().equals(orderDto.getCustomerId()))) {
+        if (orderDto.getCustomerId() != null && (order.getCustomer() == null
+                || !order.getCustomer().getId().equals(orderDto.getCustomerId()))) {
             final Customer customer = customerRepository.findById(orderDto.getCustomerId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "customer not found"));
             order.setCustomer(customer);

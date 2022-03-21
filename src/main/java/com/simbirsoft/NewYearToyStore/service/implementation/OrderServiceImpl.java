@@ -1,6 +1,8 @@
 package com.simbirsoft.NewYearToyStore.service.implementation;
 
 
+import com.simbirsoft.NewYearToyStore.exceptions.EntityNotFoundException;
+import com.simbirsoft.NewYearToyStore.exceptions.EntityUniqueException;
 import com.simbirsoft.NewYearToyStore.mappers.OrderMapper;
 import com.simbirsoft.NewYearToyStore.models.dtos.OrderDto;
 import com.simbirsoft.NewYearToyStore.models.entity.Order;
@@ -11,8 +13,6 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -30,31 +30,33 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Optional<OrderDto> saveOrder(OrderDto orderDto) {
-        Order orderToSave = orderMapper.dtoToEntity(orderDto, new Order(), customerRepository);
-        boolean isPresentOrderInDb = orderRepository.existsByCreated(orderToSave.getCreated());
-        if (!isPresentOrderInDb) {
-            OrderDto orderDtoFromDb = orderMapper.entityToDto(orderRepository.save(orderToSave), new OrderDto());
-
-            return Optional.of(orderDtoFromDb);
+    public void saveOrder(OrderDto orderDto) {
+        if (!customerRepository.existsById(orderDto.getCustomerId())) {
+            throw new EntityNotFoundException("The order exists in the database");
         }
-        throw new RuntimeException("UniqEntityException");
+
+        Order orderToSave = orderMapper.dtoToEntity(orderDto, new Order(), customerRepository);
+        if (orderRepository.existsByCreated(orderToSave.getCreated())) {
+            throw new EntityUniqueException("The order exists in the database");
+        } else {
+            orderRepository.save(orderToSave);
+        }
 
     }
 
     @Override
-    public Optional<OrderDto> getOrder(Long id) {
-        Order order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("no EntityException"));
-        OrderDto orderDto = orderMapper.entityToDto(order, new OrderDto());
+    public OrderDto getOrder(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("The order does not exist"));
 
-        return Optional.of(orderDto);
+        return orderMapper.entityToDto(order, new OrderDto());
 
     }
-
 
     @Override
     public void deleteOrder(Long id) {
-        Order order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("no EntityException"));
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("The order does not exist"));
         orderRepository.delete(order);
 
     }

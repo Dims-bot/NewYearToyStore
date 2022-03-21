@@ -12,18 +12,5 @@ public class ShoppingCartDto {
 
     private Long id;
 
-//    public ShoppingCartDto() {
-//    }
-//
-//    public ShoppingCartDto(Long id) {
-//        this.id = id;
-//    }
-//
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
+
 }

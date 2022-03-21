@@ -39,13 +39,15 @@ public interface OrderDetailMapper {
                                   @MappingTarget OrderDetail orderDetail,
                                   @Context OrderRepository orderRepository,
                                   @Context NewYearToyRepository newYearToyRepository) {
-        if (orderDetailDto.getNewYearToyId() != null && (orderDetail.getNewYearToy() == null || orderDetail.getNewYearToy().getId().equals(orderDetailDto.getNewYearToyId()))) {
+        if (orderDetailDto.getNewYearToyId() != null && (orderDetail.getNewYearToy() == null
+                || orderDetail.getNewYearToy().getId().equals(orderDetailDto.getNewYearToyId()))) {
             final NewYearToy newYearToy = newYearToyRepository.findById(orderDetailDto.getNewYearToyId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "NewYearToy not found"));
             orderDetail.setNewYearToy(newYearToy);
         }
 
-        if (orderDetailDto.getOrderId() != null && (orderDetail.getOrder() == null || orderDetail.getOrder().getId().equals(orderDetailDto.getOrderId()))) {
+        if (orderDetailDto.getOrderId() != null && (orderDetail.getOrder() == null
+                || orderDetail.getOrder().getId().equals(orderDetailDto.getOrderId()))) {
             final Order order = orderRepository.findById(orderDetailDto.getOrderId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "order not found"));
             orderDetail.setOrder(order);

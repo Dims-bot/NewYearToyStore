@@ -6,9 +6,9 @@ import java.util.Optional;
 
 public interface OrderService {
 
-    Optional<OrderDto> saveOrder(OrderDto orderDto);
+    void saveOrder(OrderDto orderDto);
 
-    Optional<OrderDto> getOrder(Long id);
+    OrderDto getOrder(Long id);
 
     void deleteOrder(Long id);
 }

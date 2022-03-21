@@ -1,5 +1,7 @@
 package com.simbirsoft.NewYearToyStore.service.implementation;
 
+import com.simbirsoft.NewYearToyStore.exceptions.EntityNotFoundException;
+import com.simbirsoft.NewYearToyStore.exceptions.EntityUniqueException;
 import com.simbirsoft.NewYearToyStore.mappers.ShoppingCartItemMapper;
 import com.simbirsoft.NewYearToyStore.models.dtos.ShoppingCartItemDto;
 import com.simbirsoft.NewYearToyStore.models.entity.NewYearToy;
@@ -13,7 +15,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -38,53 +39,56 @@ public class ShoppingCartItemServiceImpl implements ShoppingCartItemService {
 
 
     @Override
-    public Optional<ShoppingCartItemDto> saveShoppingCartItem(ShoppingCartItemDto shoppingCartItemDto) {
-        Set<ShoppingCartItem> shoppingCartItems = shoppingCartItemRepository.getShoppingCartItemsByShoppingCartId(shoppingCartItemDto.getShoppingCartId());
+    public void saveShoppingCartItem(ShoppingCartItemDto shoppingCartItemDto) {
+        if (!newYearToyRepository.existsById(shoppingCartItemDto.getNewYearToyId())) {
+            throw new EntityNotFoundException("The toy does not exist");
+        }
+        if (!shoppingCartRepository.existsById(shoppingCartItemDto.getShoppingCartId())) {
+            throw new EntityNotFoundException("The shopping cart does not exist");
+        }
+        Set<ShoppingCartItem> shoppingCartItems =
+                shoppingCartItemRepository.getShoppingCartItemsByShoppingCartId(shoppingCartItemDto.getShoppingCartId());
         boolean isPresentSameShoppingCartItemInDb = shoppingCartItems.stream()
                 .map(ShoppingCartItem::getNewYearToy)
                 .map(NewYearToy::getId)
                 .anyMatch(x -> x.equals(shoppingCartItemDto.getNewYearToyId()));
         if (!isPresentSameShoppingCartItemInDb) {
-            ShoppingCartItem shoppingCartItemToSave = shoppingCartItemMapper.dtoToEntity(shoppingCartItemDto, new ShoppingCartItem(), newYearToyRepository, shoppingCartRepository);
-            ShoppingCartItemDto shoppingCartItemDtoFromDb = shoppingCartItemMapper.entityToDto(shoppingCartItemRepository.save(shoppingCartItemToSave), new ShoppingCartItemDto());
-
-            return Optional.of(shoppingCartItemDtoFromDb);
+            ShoppingCartItem shoppingCartItemToSave = shoppingCartItemMapper.dtoToEntity(
+                    shoppingCartItemDto,
+                    new ShoppingCartItem(),
+                    newYearToyRepository,
+                    shoppingCartRepository);
+            shoppingCartItemRepository.save(shoppingCartItemToSave);
+        } else {
+            throw new EntityUniqueException("The shopping cart item exists in the database");
         }
-        return Optional.empty();
+
     }
 
 
     @Override
-    public Optional<ShoppingCartItemDto> getShoppingCartItem(Long id) {
+    public ShoppingCartItemDto getShoppingCartItem(Long id) {
         ShoppingCartItem shoppingCartItem = shoppingCartItemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("no EntityException"));
-        ShoppingCartItemDto shoppingCartItemDto =
-                shoppingCartItemMapper.entityToDto(shoppingCartItem, new ShoppingCartItemDto());
+                .orElseThrow(() -> new EntityNotFoundException("The cart item  does not exist"));
 
-        return Optional.of(shoppingCartItemDto);
+        return shoppingCartItemMapper.entityToDto(shoppingCartItem, new ShoppingCartItemDto());
 
     }
 
     @Override
-    public Optional<ShoppingCartItemDto> updateShoppingCartItem(ShoppingCartItemDto shoppingCartItemDtoForUpdate) {
-        Long id = shoppingCartItemDtoForUpdate.getId();
-
-        ShoppingCartItem shoppingCartItem = shoppingCartItemRepository
-                .findById(id).orElseThrow(() -> new RuntimeException("no EntityException"));
-        shoppingCartItem.setQuantity(shoppingCartItemDtoForUpdate.getQuantity());
-        ShoppingCartItemDto shoppingCartItemDtoUpdated =
-                shoppingCartItemMapper.entityToDto(shoppingCartItemRepository.save(shoppingCartItem), new ShoppingCartItemDto());
-
-        return Optional.of(shoppingCartItemDtoUpdated);
+    public void updateShoppingCartItem(ShoppingCartItemDto shoppingCartItemDto) {
+        ShoppingCartItem shoppingCartItem = shoppingCartItemRepository.findById(shoppingCartItemDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("The cart item  does not exist"));
+        shoppingCartItem.setQuantity(shoppingCartItemDto.getQuantity());
+        shoppingCartItemRepository.save(shoppingCartItem);
 
     }
 
     @Override
-    public boolean deleteShoppingCartItem(Long id) {
-        ShoppingCartItem shoppingCartItem = shoppingCartItemRepository.findById(id).orElseThrow(() -> new RuntimeException("no EntityException"));
+    public void deleteShoppingCartItem(Long id) {
+        ShoppingCartItem shoppingCartItem = shoppingCartItemRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("The cart item  does not exist"));
         shoppingCartItemRepository.delete(shoppingCartItem);
-
-        return true;
 
     }
 }

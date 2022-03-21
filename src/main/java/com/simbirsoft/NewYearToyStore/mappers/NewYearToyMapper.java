@@ -1,11 +1,9 @@
 package com.simbirsoft.NewYearToyStore.mappers;
 
 import com.simbirsoft.NewYearToyStore.models.dtos.NewYearToyDto;
-import com.simbirsoft.NewYearToyStore.models.dtos.NewYearToyDtoNew;
 import com.simbirsoft.NewYearToyStore.models.entity.Category;
 import com.simbirsoft.NewYearToyStore.models.entity.NewYearToy;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.CategoryRepository;
-import com.simbirsoft.NewYearToyStore.repository.abstracts.NewYearToyRepository;
 import org.mapstruct.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,7 +32,8 @@ public interface NewYearToyMapper {
     default void afterDtoToEntity(NewYearToyDto newYearToyDto,
                                   @MappingTarget NewYearToy newYearToy,
                                   @Context CategoryRepository categoryRepository) {
-        if (newYearToyDto.getCategoryId() != null && (newYearToy.getCategory() == null || !newYearToy.getCategory().getId().equals(newYearToyDto.getCategoryId()))) {
+        if (newYearToyDto.getCategoryId() != null && (newYearToy.getCategory() == null
+                || !newYearToy.getCategory().getId().equals(newYearToyDto.getCategoryId()))) {
             final Category category = categoryRepository.findById(newYearToyDto.getCategoryId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "category not found"));
             newYearToy.setCategory(category);

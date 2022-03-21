@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface CategoryService {
 
-    Optional<CategoryDto> saveCategory(NewCategoryDto categoryDtoNew);
+    void saveCategory(NewCategoryDto categoryDtoNew);
 
-    Optional<CategoryDto> getCategoryByName(String categoryName);
+    CategoryDto getCategoryByName(String categoryName);
 
-    Optional<CategoryDto> updateCategory(CategoryDto categoryDtoForUpdate);
+    void updateCategory(CategoryDto categoryDtoForUpdate);
 
     void deleteCategory(Long id);
 }

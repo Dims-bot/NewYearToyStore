@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface ShoppingCartItemService {
 
-    Optional<ShoppingCartItemDto> saveShoppingCartItem(ShoppingCartItemDto shoppingCartItemDto);
+    void saveShoppingCartItem(ShoppingCartItemDto shoppingCartItemDto);
 
-    Optional<ShoppingCartItemDto> getShoppingCartItem(Long id);
+    ShoppingCartItemDto getShoppingCartItem(Long id);
 
-    Optional<ShoppingCartItemDto> updateShoppingCartItem(ShoppingCartItemDto shoppingCartItemDto);
+    void updateShoppingCartItem(ShoppingCartItemDto shoppingCartItemDto);
 
-    boolean deleteShoppingCartItem(Long id);
+    void deleteShoppingCartItem(Long id);
 }

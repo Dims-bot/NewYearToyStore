@@ -8,10 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-//import javax.validation.Valid;
 import javax.validation.Valid;
-import java.util.Optional;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -23,13 +21,13 @@ public class CategoryController {
 
     @PostMapping("/add")
     public ResponseEntity<String> addCategory(@Valid @RequestBody NewCategoryDto categoryDtoNew) {
-        Optional<CategoryDto> categoryDtoOptional = categoryService.saveCategory(categoryDtoNew);
-        return categoryDtoOptional.isPresent() ?
-                ResponseEntity.ok("A category is created"):
-                ResponseEntity.status(422).body("Category " + categoryDtoNew.getCategoryName() + " is already in the database");
+        categoryService.saveCategory(categoryDtoNew);
+
+    return ResponseEntity.ok("A category is created");
+
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         categoryService.deleteCategory(id);
 
@@ -39,19 +37,16 @@ public class CategoryController {
 
     @GetMapping("/category/{name}")
     public ResponseEntity<?> getCategoryByName(@PathVariable String name) {
-        Optional<CategoryDto> categoryDtoOptional = categoryService.getCategoryByName(name);
-        return categoryDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(categoryDtoOptional) :
-                ResponseEntity.status(422).body("Invalid category name: " + name);
+
+        return ResponseEntity.ok().body(categoryService.getCategoryByName(name));
 
     }
 
     @PutMapping("/update")
     public ResponseEntity<?> updateCategory(@Valid @RequestBody CategoryDto categoryDto) {
-        Optional<CategoryDto> categoryDtoOptional = categoryService.updateCategory(categoryDto);
-        return categoryDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(categoryDtoOptional) :
-                ResponseEntity.status(422).body("Invalid category id: " + categoryDto.getId() + " or new categoryName " + categoryDto.getCategoryName());
+        categoryService.updateCategory(categoryDto);
+
+        return ResponseEntity.ok().build();
 
     }
 

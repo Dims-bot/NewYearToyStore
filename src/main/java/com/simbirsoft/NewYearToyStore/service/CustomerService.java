@@ -7,13 +7,13 @@ import java.util.Optional;
 
 public interface CustomerService {
 
-    Optional<CustomerDto> saveCustomer(CustomerDto customerDto);
+    void saveCustomer(CustomerDto customerDto);
 
-    Optional<CustomerDto> getCustomerProfile(String email);
+    CustomerDto getCustomerProfile(String email);
 
-    Optional<CustomerDto> updateCustomer(CustomerDto customerDtoForUpdate);
+    void updateCustomer(CustomerDto customerDtoForUpdate);
 
-    boolean deleteCustomer(Long customerId);
+    void deleteCustomer(Long customerId);
 
 
 }

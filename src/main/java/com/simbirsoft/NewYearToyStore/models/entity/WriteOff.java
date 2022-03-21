@@ -3,7 +3,6 @@ package com.simbirsoft.NewYearToyStore.models.entity;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -24,33 +23,6 @@ public class WriteOff extends BaseDomainEntity {
     @Column
     Boolean isApproved;
 
-//    public WriteOff() {
-//    }
 
-    public WriteOff(Long id, LocalDateTime created,  Boolean isApproved) {
-        super(id);
-        this.created = created;
-        this.isApproved = isApproved;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
-    public Boolean getApproved() {
-        return isApproved;
-    }
-
-    public void setApproved(Boolean approved) {
-        isApproved = approved;
-    }
 }
 

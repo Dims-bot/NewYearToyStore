@@ -1,5 +1,7 @@
 package com.simbirsoft.NewYearToyStore.service.implementation;
 
+import com.simbirsoft.NewYearToyStore.exceptions.EntityNotFoundException;
+import com.simbirsoft.NewYearToyStore.exceptions.EntityUniqueException;
 import com.simbirsoft.NewYearToyStore.mappers.NewYearToyMapper;
 import com.simbirsoft.NewYearToyStore.models.dtos.NewYearToyDto;
 import com.simbirsoft.NewYearToyStore.models.entity.Category;
@@ -11,8 +13,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -32,51 +33,54 @@ public class NewYearToyServiceImpl implements NewYearToyService {
     }
 
     @Override
-    public Optional<NewYearToyDto> saveNewYearToy(NewYearToyDto newYearToyDto) {
+    public void saveNewYearToy(NewYearToyDto newYearToyDto) {
+        if (newYearToyRepository.existsByName(newYearToyDto.getName())) {
+            throw new EntityUniqueException("The toy exists in the database");
+        } else if (!categoryRepository.existsById(newYearToyDto.getCategoryId())) {
+            throw new EntityNotFoundException("The category does not exist");
+        } else {
+            NewYearToy newYearToy = newYearToyMapper.dtoToEntity(newYearToyDto, new NewYearToy(), categoryRepository);
+            newYearToyRepository.save(newYearToy);
+        }
 
-        NewYearToy newYearToyToSave = newYearToyMapper.dtoToEntity(newYearToyDto, new NewYearToy(), categoryRepository);
-        NewYearToyDto newYearToyDtoFromDb =
-                newYearToyMapper.entityToDto(newYearToyRepository.save(newYearToyToSave), new NewYearToyDto());
-
-        return Optional.of(newYearToyDtoFromDb);
     }
 
     @Override
-    public Optional<NewYearToyDto> getNewYearToy(Long id) {
+    public NewYearToyDto getNewYearToy(Long id) {
         NewYearToy newYearToy = newYearToyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("no EntityException"));
-        NewYearToyDto newYearToyDto = newYearToyMapper.entityToDto(newYearToy, new NewYearToyDto());
+                .orElseThrow(() -> new EntityNotFoundException("The toy does not exist"));
 
-        return Optional.of(newYearToyDto);
+        return newYearToyMapper.entityToDto(newYearToy, new NewYearToyDto());
 
     }
 
     @Override
-    public Optional<NewYearToyDto> updateNewYearToy(NewYearToyDto newYearToyDtoNew) {
-        Long idNewYearToyDto = newYearToyDtoNew.getId();
-
-        NewYearToy newYearToyToUpdate = newYearToyRepository.findById(idNewYearToyDto)
-                .orElseThrow(() -> new RuntimeException("no EntityException"));
+    @Transactional
+    public void updateNewYearToy(NewYearToyDto newYearToyDtoNew) {
+        NewYearToy newYearToyToUpdate = newYearToyRepository.findById(newYearToyDtoNew.getId())
+                .orElseThrow(() -> new EntityNotFoundException("The toy does not exist"));
+        if (newYearToyRepository.existsByName(newYearToyDtoNew.getName()) &&
+                newYearToyDtoNew.getCategoryId().equals(newYearToyToUpdate.getCategory().getId())) {
+            throw new EntityUniqueException("The toy with name "
+                    + newYearToyDtoNew.getName() + " and category id "
+                    + newYearToyDtoNew.getCategoryId() + " exists in the database");
+        }
         newYearToyToUpdate.setName(newYearToyDtoNew.getName());
         newYearToyToUpdate.setPrice(newYearToyDtoNew.getPrice());
 
-        Category categoryFromDto = categoryRepository.findById(newYearToyDtoNew.getCategoryId()).
-                orElseThrow(() -> new RuntimeException("no EntityException"));
+        Category categoryFromDto = categoryRepository.findById(newYearToyDtoNew.getCategoryId())
+                .orElseThrow(() -> new EntityNotFoundException("The category does not exist"));
         newYearToyToUpdate.setCategory(categoryFromDto);
-        NewYearToyDto newYearToyDtoUpdated =
-                newYearToyMapper.entityToDto(newYearToyRepository.save(newYearToyToUpdate), new NewYearToyDto());
 
-        return Optional.of(newYearToyDtoUpdated);
-
+        newYearToyRepository.save(newYearToyToUpdate);
 
     }
 
     @Override
-    public boolean deleteNewYearToy(Long id) {
-        if (newYearToyRepository.existsById(id)) {
-            newYearToyRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public void deleteNewYearToy(Long id) {
+        NewYearToy newYearToy = newYearToyRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("The category does not exist"));
+        newYearToyRepository.delete(newYearToy);
+
     }
 }

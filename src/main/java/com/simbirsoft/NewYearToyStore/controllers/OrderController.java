@@ -5,12 +5,9 @@ import com.simbirsoft.NewYearToyStore.service.OrderService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -22,24 +19,20 @@ public class OrderController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addOrder(@Valid @RequestBody OrderDto orderDto) {
-        Optional<OrderDto> orderDtoOptional = orderService.saveOrder(orderDto);
+        orderService.saveOrder(orderDto);
 
-        return orderDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(orderDtoOptional) :
-                ResponseEntity.status(422).body("Order created " + orderDto.getCreated() + "already exist");
+        return ResponseEntity.ok().build();
 
     }
 
-    @GetMapping("/{id}/order")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getOrder(@PathVariable Long id) {
-        Optional<OrderDto> orderDtoOptional = orderService.getOrder(id);
-        return orderDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(orderDtoOptional) :
-                ResponseEntity.status(422).body("Invalid Order id: " + id);
+
+        return ResponseEntity.ok().body(orderService.getOrder(id));
 
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         orderService.deleteOrder(id);
 

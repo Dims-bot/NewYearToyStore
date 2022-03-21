@@ -5,14 +5,9 @@ import com.simbirsoft.NewYearToyStore.service.NewYearToyService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,35 +19,32 @@ public class NewYearToyController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addNewYearToy(@Valid @RequestBody NewYearToyDto newYearToyDto) {
-        Optional<NewYearToyDto> newYearToyDtoOptional = newYearToyService.saveNewYearToy(newYearToyDto);
+        newYearToyService.saveNewYearToy(newYearToyDto);
 
-        return ResponseEntity.ok().body(newYearToyDtoOptional);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}/toy")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getNewYearToyById(@PathVariable Long id) {
-        Optional<NewYearToyDto> newYearToyDtoOptional = newYearToyService.getNewYearToy(id);
-        return newYearToyDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(newYearToyDtoOptional) :
-                ResponseEntity.status(422).body("Invalid NewYearToy id: " + id);
-    }
+        NewYearToyDto newYearToyDto = newYearToyService.getNewYearToy(id);
 
+        return ResponseEntity.ok().body(newYearToyDto);
+
+    }
 
     @PutMapping("/update")
     public  ResponseEntity<?> updateNewYearToy(@Valid @RequestBody NewYearToyDto newYearToyDto) {
-        Optional<NewYearToyDto> newYearToyDtoOptional = newYearToyService.updateNewYearToy(newYearToyDto);
-        return newYearToyDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(newYearToyDtoOptional):
-                ResponseEntity.status(422).body("Invalid NewYearToy id: " + newYearToyDto.getId() + " or Category Id " + newYearToyDto.getCategoryId());
+        newYearToyService.updateNewYearToy(newYearToyDto);
+
+        return ResponseEntity.ok().build();
+
     }
 
-
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
-        boolean isPresentNewYearToy = newYearToyService.deleteNewYearToy(id);
-        return isPresentNewYearToy ?
-                ResponseEntity.ok().body("NewYearToy with id " + id + " was deleted"):
-                ResponseEntity.status(422).body("Invalid NewYearToy id: " + id);
+        newYearToyService.deleteNewYearToy(id);
+        return ResponseEntity.ok().body("NewYearToy with id " + id + " was deleted");
+
     }
 
 

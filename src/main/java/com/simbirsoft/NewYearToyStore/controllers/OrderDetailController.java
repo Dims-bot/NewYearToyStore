@@ -10,11 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true )
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/api/order_details")
 public class OrderDetailController {
 
@@ -22,17 +21,32 @@ public class OrderDetailController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addOrderDetail(@Valid @RequestBody OrderDetailDto orderDetailDto) {
-        Optional<OrderDetailDto> orderDetailDtoOptional = orderDetailService.saveOrderDetail(orderDetailDto);
-        return orderDetailDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(orderDetailDtoOptional) :
-                ResponseEntity.status(422).body("Order detail with order " + orderDetailDto.getOrderId() + " and orderDetailId " + orderDetailDto.getId() + "already in Db");
+        orderDetailService.saveOrderDetail(orderDetailDto);
+
+        return ResponseEntity.ok().build();
+
     }
 
-    @GetMapping("/{id}/order_detail")
-    public ResponseEntity<?> getShoppingCartItem(@PathVariable Long id) {
-        Optional<OrderDetailDto> orderDetailDtoOptional = orderDetailService.getOrderDetail(id);
-        return orderDetailDtoOptional.isPresent() ?
-                ResponseEntity.ok().body(orderDetailDtoOptional) :
-                ResponseEntity.status(422).body("Invalid OrderDetail id: " + id);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOrderDetail(@PathVariable Long id) {
+
+        return ResponseEntity.ok().body(orderDetailService.getOrderDetail(id));
+
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateOrderDetail(@Valid @RequestBody OrderDetailDto orderDetailDto) {
+        orderDetailService.updateOrderDetail(orderDetailDto);
+
+        return ResponseEntity.ok().build();
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        orderDetailService.deleteOrderDetail(id);
+
+        return ResponseEntity.ok().body("Order detail with id " + id + " was deleted");
+
     }
 }

@@ -30,8 +30,12 @@ public interface WriteOffRecordMapper {
 
     @AfterMapping
     default void afterEntityTodDto(WriteOffRecord writeOffRecord, @MappingTarget WriteOffRecordDto writeOffRecordDto) {
-        writeOffRecordDto.setWriteOffId(writeOffRecord.getWriteOff() == null ? null : writeOffRecord.getWriteOff().getId());
-        writeOffRecordDto.setNewYearToyId(writeOffRecord.getNewYearToy() == null ? null : writeOffRecord.getNewYearToy().getId());
+        writeOffRecordDto.setWriteOffId(writeOffRecord.getWriteOff() == null ?
+                null :
+                writeOffRecord.getWriteOff().getId());
+        writeOffRecordDto.setNewYearToyId(writeOffRecord.getNewYearToy() == null ?
+                null :
+                writeOffRecord.getNewYearToy().getId());
 
     }
 
@@ -40,13 +44,15 @@ public interface WriteOffRecordMapper {
                                   @MappingTarget WriteOffRecord writeOffRecord,
                                   @Context WriteOffRepository writeOffRepository,
                                   @Context NewYearToyRepository newYearToyRepository) {
-        if (writeOffRecordDto.getNewYearToyId() != null && (writeOffRecord.getNewYearToy() == null || writeOffRecord.getNewYearToy().getId().equals(writeOffRecordDto.getNewYearToyId()))) {
+        if (writeOffRecordDto.getNewYearToyId() != null && (writeOffRecord.getNewYearToy() == null
+                || writeOffRecord.getNewYearToy().getId().equals(writeOffRecordDto.getNewYearToyId()))) {
             final NewYearToy newYearToy = newYearToyRepository.findById(writeOffRecordDto.getNewYearToyId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "NewYearToy not found"));
             writeOffRecord.setNewYearToy(newYearToy);
         }
 
-        if (writeOffRecordDto.getWriteOffId() != null && (writeOffRecord.getWriteOff() == null || writeOffRecord.getWriteOff().getId().equals(writeOffRecordDto.getWriteOffId()))) {
+        if (writeOffRecordDto.getWriteOffId() != null && (writeOffRecord.getWriteOff() == null
+                || writeOffRecord.getWriteOff().getId().equals(writeOffRecordDto.getWriteOffId()))) {
             final WriteOff writeOff = writeOffRepository.findById(writeOffRecordDto.getWriteOffId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "writeOff not found"));
             writeOffRecord.setWriteOff(writeOff);

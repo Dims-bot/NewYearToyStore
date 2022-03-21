@@ -29,9 +29,12 @@ public interface ShoppingCartItemMapper {
 
 
     @AfterMapping
-    default void afterEntityToDto(ShoppingCartItem shoppingCartItem, @MappingTarget ShoppingCartItemDto shoppingCartItemDto) {
-        shoppingCartItemDto.setShoppingCartId(shoppingCartItem.getShoppingCart() == null ? null : shoppingCartItem.getShoppingCart().getId());
-        shoppingCartItemDto.setNewYearToyId(shoppingCartItem.getNewYearToy() == null ? null : shoppingCartItem.getNewYearToy().getId());
+    default void afterEntityToDto(ShoppingCartItem shoppingCartItem,
+                                  @MappingTarget ShoppingCartItemDto shoppingCartItemDto) {
+        shoppingCartItemDto.setShoppingCartId(shoppingCartItem.getShoppingCart() == null ? null
+                : shoppingCartItem.getShoppingCart().getId());
+        shoppingCartItemDto.setNewYearToyId(shoppingCartItem.getNewYearToy() == null ? null
+                : shoppingCartItem.getNewYearToy().getId());
 
     }
 
@@ -42,12 +45,14 @@ public interface ShoppingCartItemMapper {
                                   @Context NewYearToyRepository newYearToyRepository,
                                   @Context ShoppingCartRepository shoppingCartRepository) {
 
-        if (shoppingCartItemDto.getNewYearToyId() != null && (shoppingCartItem.getNewYearToy() == null || !shoppingCartItem.getNewYearToy().getId().equals(shoppingCartItemDto.getNewYearToyId()))) {
+        if (shoppingCartItemDto.getNewYearToyId() != null && (shoppingCartItem.getNewYearToy() == null
+                || !shoppingCartItem.getNewYearToy().getId().equals(shoppingCartItemDto.getNewYearToyId()))) {
             final NewYearToy newYearToy = newYearToyRepository.findById(shoppingCartItemDto.getNewYearToyId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "newYearToy not found"));
             shoppingCartItem.setNewYearToy(newYearToy);
         }
-        if (shoppingCartItemDto.getShoppingCartId() != null && (shoppingCartItem.getShoppingCart() == null || !shoppingCartItem.getShoppingCart().getId().equals(shoppingCartItemDto.getShoppingCartId()))) {
+        if (shoppingCartItemDto.getShoppingCartId() != null && (shoppingCartItem.getShoppingCart() == null
+                || !shoppingCartItem.getShoppingCart().getId().equals(shoppingCartItemDto.getShoppingCartId()))) {
             final ShoppingCart shoppingCart = shoppingCartRepository.findById(shoppingCartItemDto.getShoppingCartId()).
                     orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "shoppingCart not found"));
             shoppingCartItem.setShoppingCart(shoppingCart);

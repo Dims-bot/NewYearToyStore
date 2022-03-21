@@ -9,6 +9,8 @@ public interface NewYearToyRepository extends JpaRepository<NewYearToy, Long> {
 
     boolean existsById(Long id);
 
+    boolean existsByName(String name);
+
     Optional<NewYearToy> findById(Long id);
 
     NewYearToy getById(Long id);

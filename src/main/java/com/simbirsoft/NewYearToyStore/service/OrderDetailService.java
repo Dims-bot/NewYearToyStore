@@ -8,11 +8,11 @@ import java.util.Optional;
 
 public interface OrderDetailService {
 
-    Optional<OrderDetailDto> saveOrderDetail(OrderDetailDto orderDetailDto);
+    void saveOrderDetail(OrderDetailDto orderDetailDto);
 
-    Optional<OrderDetailDto> getOrderDetail(Long id);
+    OrderDetailDto getOrderDetail(Long id);
 
-    Optional<OrderDetailDto> updateOrderDetail(OrderDetailDto orderDetailDto);
+    void updateOrderDetail(OrderDetailDto orderDetailDto);
 
     void deleteOrderDetail(Long id);
 }

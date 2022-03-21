@@ -1,8 +1,9 @@
 package com.simbirsoft.NewYearToyStore.service.implementation;
 
+import com.simbirsoft.NewYearToyStore.exceptions.EntityNotFoundException;
+import com.simbirsoft.NewYearToyStore.exceptions.EntityUniqueException;
 import com.simbirsoft.NewYearToyStore.mappers.CustomerMapper;
 import com.simbirsoft.NewYearToyStore.models.dtos.CustomerDto;
-//import com.simbirsoft.NewYearToyStore.models.dtos.RegistrationDto;
 import com.simbirsoft.NewYearToyStore.models.entity.Customer;
 import com.simbirsoft.NewYearToyStore.repository.abstracts.CustomerRepository;
 import com.simbirsoft.NewYearToyStore.service.CustomerService;
@@ -10,8 +11,6 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -27,50 +26,42 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Optional<CustomerDto> saveCustomer(CustomerDto customerDto) {
+    public void saveCustomer(CustomerDto customerDto) {
         if (!repository.existsByEmail(customerDto.getEmail())) {
             Customer customerModel = customerMapper.dtoToEntity(customerDto, new Customer());
-            CustomerDto customerDtoFromDb = customerMapper.entityToDto(repository.save(customerModel),new CustomerDto());
-
-            return Optional.of(customerDtoFromDb);
+            repository.save(customerModel);
+        } else {
+            throw new EntityUniqueException("The customer exists in the database");
         }
-
-        return Optional.empty();
 
     }
 
     @Override
-    public boolean deleteCustomer(Long customerId) {
-        if (repository.existsById(customerId)) {
-            repository.deleteById(customerId);
-            return true;
-        }
-        return false;
+    public void deleteCustomer(Long id) {
+        Customer customer = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("The customer does not exist"));
+        repository.delete(customer);
 
     }
 
     @Override
-    public Optional<CustomerDto> getCustomerProfile(String email) {
-        Customer customer = repository.findByEmail(email).orElseThrow(() -> new RuntimeException("no EntityException"));
-        CustomerDto customerDto = customerMapper.entityToDto(customer, new CustomerDto());
+    public CustomerDto getCustomerProfile(String email) {
+        Customer customer = repository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("The customer does not exist"));
 
-        return Optional.of(customerDto);
+        return customerMapper.entityToDto(customer, new CustomerDto());
 
     }
 
     @Override
-    public Optional<CustomerDto> updateCustomer(CustomerDto customerDtoForUpdate) {
+    public void updateCustomer(CustomerDto customerDtoForUpdate) {
+        Customer customer = repository.findByEmail(customerDtoForUpdate.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("The customer does not exist"));
+        customer.setFirstName(customerDtoForUpdate.getFirstName());
+        customer.setLastName(customerDtoForUpdate.getLastName());
 
-        if (repository.existsByEmail(customerDtoForUpdate.getEmail())) {
-            Customer customer = repository.findByEmail(customerDtoForUpdate.getEmail()).orElseThrow(() -> new RuntimeException("no EntityException"));
-            customer.setFirstName(customerDtoForUpdate.getFirstName());
-            customer.setLastName(customerDtoForUpdate.getLastName());
+        repository.save(customer);
 
-            CustomerDto customerDto = customerMapper.entityToDto(repository.save(customer), new CustomerDto());
-
-            return Optional.of(customerDto);
-        }
-        return Optional.empty();
     }
 
 

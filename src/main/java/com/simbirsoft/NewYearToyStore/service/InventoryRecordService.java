@@ -8,15 +8,14 @@ import java.util.Set;
 
 public interface InventoryRecordService {
 
-    Optional<InventoryRecordDto> saveInventoryRecord(InventoryRecordDto inventoryRecordDto);
+    void saveInventoryRecord(InventoryRecordDto inventoryRecordDto);
 
-    Optional<InventoryRecordDto> getInventoryRecordById(Long id);
+    InventoryRecordDto getInventoryRecordById(Long id);
 
-    Optional<InventoryRecordDto> updateInventoryRecord(InventoryRecordDto inventoryRecordDtoForUpdate);
+    void updateInventoryRecord(InventoryRecordDto inventoryRecordDtoForUpdate);
 
-    boolean deleteInventoryRecord(Long inventoryRecordId);
+    void deleteInventoryRecord(Long inventoryRecordId);
 
     void addInvoice(Set<InventoryRecordDto> inventoryRecordDtoSet);
 
-    void wrightOff(Set<InventoryRecordDto> inventoryRecordDtoSet);
 }

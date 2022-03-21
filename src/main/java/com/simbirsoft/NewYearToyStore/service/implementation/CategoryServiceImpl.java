@@ -1,5 +1,7 @@
 package com.simbirsoft.NewYearToyStore.service.implementation;
 
+import com.simbirsoft.NewYearToyStore.exceptions.EntityNotFoundException;
+import com.simbirsoft.NewYearToyStore.exceptions.EntityUniqueException;
 import com.simbirsoft.NewYearToyStore.mappers.CategoryMapper;
 import com.simbirsoft.NewYearToyStore.models.dtos.CategoryDto;
 import com.simbirsoft.NewYearToyStore.models.dtos.NewCategoryDto;
@@ -10,8 +12,6 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -27,43 +27,41 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Optional<CategoryDto> saveCategory(NewCategoryDto categoryDtoNew) {
+    public void saveCategory(NewCategoryDto categoryDtoNew) {
         if (!categoryRepository.existsByCategoryName(categoryDtoNew.getCategoryName())) {
-            Category categoryModel = categoryMapper.dtoToEntity(categoryDtoNew);
-            CategoryDto categoryDto = categoryMapper.entityToDto(categoryRepository.save(categoryModel));
-
-            return Optional.of(categoryDto);
+            Category category = categoryMapper.dtoToEntity(categoryDtoNew);
+            categoryRepository.save(category);
+        } else {
+            throw new EntityUniqueException("The category exists in the database");
         }
-        return Optional.empty();
     }
 
     @Override
-    public Optional<CategoryDto> getCategoryByName(String categoryName) {
-        Category category = categoryRepository.findByCategoryName(categoryName).orElseThrow(()-> new RuntimeException("no EntityException"));
-        CategoryDto categoryDto = categoryMapper.entityToDto(category);
+    public CategoryDto getCategoryByName(String categoryName) {
+        Category category = categoryRepository.findByCategoryName(categoryName)
+                .orElseThrow(() -> new EntityNotFoundException("The category does not exist"));
 
-        return Optional.of(categoryDto);
+        return categoryMapper.entityToDto(category);
     }
 
     @Override
-    public Optional<CategoryDto> updateCategory(CategoryDto categoryDtoForUpdate) {
+    public void updateCategory(CategoryDto categoryDtoForUpdate) {
 
-        if (categoryRepository.existsById(categoryDtoForUpdate.getId()) &&
-                !categoryRepository.existsByCategoryName(categoryDtoForUpdate.getCategoryName())) {
+        if (!categoryRepository.existsByCategoryName(categoryDtoForUpdate.getCategoryName())) {
             Category categoryToUpdate = categoryRepository.findById(categoryDtoForUpdate.getId())
-                    .orElseThrow(()-> new RuntimeException("no EntityException"));
+                    .orElseThrow(() -> new EntityNotFoundException("The category does not exist"));
             categoryToUpdate.setCategoryName(categoryDtoForUpdate.getCategoryName());
-
-            CategoryDto categoryDto = categoryMapper.entityToDto(categoryRepository.save(categoryToUpdate));
-
-            return Optional.of(categoryDto);
+            categoryRepository.save(categoryToUpdate);
+        } else {
+            throw new EntityUniqueException("The category exists in the database");
         }
-        return Optional.empty();
+
     }
 
     @Override
     public void deleteCategory(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("no EntityException"));
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("The category does not exist"));
         categoryRepository.delete(category);
 
     }
