@@ -12,6 +12,9 @@ import org.springframework.web.server.ResponseStatusException;
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ShoppingCartMapper {
 
+
+    
+
     ShoppingCartDto entityToDto(ShoppingCart shoppingCart, @MappingTarget ShoppingCartDto shoppingCartDto);
 
     @Mapping(target = "customer", ignore = true)
